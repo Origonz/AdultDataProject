@@ -7,7 +7,7 @@ data = {}
 now = datetime.now()
 time = datetime.timestamp(now)
 
-for i in range(0, 2):
+for i in range(0, 100):
     url = "https://fr.pornhub.com/video?o=cm&page=" + str(i)
     html = requests.get(url).text
     soup = BeautifulSoup(html, features="html5lib")
@@ -22,7 +22,11 @@ for i in range(0, 2):
         soup = BeautifulSoup(html2, features="html5lib")
         details = soup.find_all(class_="video-action-tab about-tab active")[0]
         categories = details.find_all(class_='categoriesWrapper')[0].find_all('a')
-        auteur = details.find_all(class_='usernameWrap clearfix')[0].find_all('a')[0].text
+        aut = details.find_all(class_='usernameWrap clearfix')[0].find_all('a')
+        if(len(aut)==0):
+            auteur = "NULL"
+        else:
+            auteur = aut[0].text
         production = details.find_all(class_='productionWrapper')[0].find_all('a')[0].text
         listCategories = []
         for i in range(0, len(categories)-1):
@@ -38,4 +42,5 @@ for i in range(0, 2):
 
 with open("data.json", "w") as f:
     json.dump(data, f)
+    print(len(data))
 
