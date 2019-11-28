@@ -23,7 +23,14 @@ for i in range(0, 10):
         url2 = "https://fr.pornhub.com" + link
         html2 = requests.get(url2).text
         soup = BeautifulSoup(html2, features="html5lib")
-        details = soup.find_all(class_="video-action-tab about-tab active")[0]
+        det = soup.find_all(class_="video-action-tab about-tab active")
+        if len(det) == 0 :
+            view = -1
+            percent = -1
+        else:
+            details = det[0]
+        views = int(details.find_all(class_='count')[0].text.replace(" ", ""))
+        percent = int(details.find_all(class_='percent')[0].text.split('%')[0])
         categories = details.find_all(class_='categoriesWrapper')[0].find_all('a')
         aut = details.find_all(class_='usernameWrap clearfix')[0].find_all('a')
         if(len(aut)==0):
