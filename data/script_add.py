@@ -2,12 +2,15 @@ import requests
 import json
 from bs4 import BeautifulSoup
 from datetime import datetime
+#import time as timeL
 
 data = {}
 now = datetime.now()
 time = datetime.timestamp(now)
 
-for i in range(0, 100):
+#start_time = timeL.time()
+
+for i in range(0, 10):
     url = "https://fr.pornhub.com/video?o=cm&page=" + str(i)
     html = requests.get(url).text
     soup = BeautifulSoup(html, features="html5lib")
@@ -32,8 +35,8 @@ for i in range(0, 100):
         for i in range(0, len(categories)-1):
             listCategories.append(categories[i].text)
 
-        views = details.find_all(class_='count')[0].text
-        percent = details.find_all(class_='percent')[0].text.split('%')[0]
+        views = int(details.find_all(class_='count')[0].text.replace(" ", ""))
+        percent = int(details.find_all(class_='percent')[0].text.split('%')[0])
 
         evolution = []
         evolution.append({"time": time, "views": views, "percent": percent})    
@@ -42,5 +45,6 @@ for i in range(0, 100):
 
 with open("data.json", "w") as f:
     json.dump(data, f)
-    print(len(data))
+#    print(len(data))
+#    print("Temps d execution : %s secondes ---" % (timeL.time() - start_time))
 
