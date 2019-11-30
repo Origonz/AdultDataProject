@@ -3,6 +3,7 @@ import json
 from bs4 import BeautifulSoup
 from datetime import datetime
 #import time as timeL
+import urllib.request
 
 with open("data.json", "r") as f:
     data = json.load(f)
@@ -14,7 +15,7 @@ time = datetime.timestamp(datetime.now())
 
 for x in data:
     url = "https://fr.pornhub.com" + x
-    html = requests.get(url).text
+    html = urllib.request.urlopen(url).read()
     soup = BeautifulSoup(html, features="html5lib")
     det = soup.find_all(class_="video-action-tab about-tab active")
     if len(det) == 0 :
