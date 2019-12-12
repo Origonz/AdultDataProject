@@ -1,5 +1,6 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+import sys
 
 def toDataCategorie(data_dict):
     data_cat = {}
@@ -20,12 +21,32 @@ def toDataCategorie(data_dict):
 def toDayView(data_dict): #A refaire
     data_day = {}
     for video in data_dict:
+        tmp_date = {}
         for t in data_dict[video]["evolution"]:
+            h = datetime.utcfromtimestamp(t["time"]).strftime('%d-%m-%Y')
+            last = datetime.utcfromtimestamp(t["time"] - 86400).strftime('%d-%m-%Y')
+            if last in tmp_date:
+                if h in tmp_date:
+                    v = t["views"] - tmp_date[h]
+                    tmp_date[h] = t["views"]
+                else:
+                    v = t["views"] - tmp_date[last]
+            else:
+                v = t["views"]
+            tmp_date[h] = t["views"]
             d = datetime.utcfromtimestamp(t["time"]).strftime('%a')
             if not(d in data_day):
                 data_day[d] = 0
-            data_day[d] = data_day[d] + t["views"]
+            data_day[d] = data_day[d] + v
     return data_day
+    
+def tupleToDict(data_tuple):
+    data_dict = {}
+    for d in data_tuple:
+        data_dict[d] = {}
+        for c in data_tuple[d]:
+            data_dict[d][c[0]] = c[1]
+    return data_dict
 
 def toTimeView(data_dict): #A refaire - nb de vue qui diminue
     data_time = {}
@@ -39,8 +60,8 @@ def toTimeView(data_dict): #A refaire - nb de vue qui diminue
 
 with open('data.json') as json_data:
     data_dict = json.load(json_data)
-    
-    data_day = toDataCategorie(data_dict)
+
+    data_day = toDayView(data_dict)
 
     for d in data_day:
         print(d + " : " + str(data_day[d]))
