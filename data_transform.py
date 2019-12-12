@@ -23,6 +23,12 @@ def tupleToDict(data_tuple):
             data_dict[d][c[0]] = c[1]
     return data_dict
 
+# Ecrire dans fichier
+def dictToFile(data_dict, name):
+    fh = open(name + ".json", "w") 
+    fh.write(str(data_day).replace("'","\""))
+    fh.close()
+
 # Transforme les données en views par categorie
 def toDataCategorie(data_dict):
     data_cat = {}
