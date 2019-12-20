@@ -57,7 +57,33 @@ def toTimeView(data_dict):
             data_time[d] = data_time[d] + t["views"]
     return data_time
 
+# Compte la fluctuation de vue en fonction de la date
+def toViewFluctuation(data_dict):
+    data_time = {}
+    for video in data_dict:
+        for t in data_dict[video]["evolution"]:
+            d = datetime.utcfromtimestamp(t["time"]).strftime('%d-%m-%Y %H:%M:%S')
+            if not(d in data_time):
+                data_time[d] = 0
+            data_time[d] = data_time[d] + t["views"]
+    data_fluc = {}
+    viewL = 0
+    last = 0
+    viewC = {}
+    for d in data_time:
+        if last == 0:
+            viewC[d] = 0
+        else:
+            viewC[d] = data_time[d] - viewL
+            print(d," - ", viewC[d])
+            data_fluc[d] = viewC[d] - viewC[last]
+        viewL = data_time[d]
+        last = d
+    print("------")
+    return data_fluc
+
 # Compte le nombre de vue pour chaque jour de la semaine
+# TODO Changer par rapport au fluctuations
 def toDayView(data_dict):
     data_day = {}
     for video in data_dict:
@@ -126,7 +152,7 @@ def bestVideos(data_dict, x):
         videos[d[0]] = data_dict[d[0]]
     return videos
 
-FILES = True
+FILES = False
 
 with open('data/data.json') as json_data:
 
@@ -156,7 +182,8 @@ with open('data/data.json') as json_data:
 
     else:
 
-        best = bestVideos(data_dict, 10)
+        data_clean = DataClean(data_dict)
+        fluc = toViewFluctuation(data_clean)
 
-        for d in best:
-            print(d + " : " + str(best[d]["evolution"][-1]["views"]))
+        for d in fluc:
+            print(d + " : " + str(fluc[d]))
