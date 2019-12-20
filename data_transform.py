@@ -1,9 +1,10 @@
 import json
 from datetime import datetime, timedelta
 import sys
+import json
 
 # Netoyeur de données
-# si une vidéo est supprimé, on garde son nombre de vue avant suppression
+# Si une vidéo est supprimé, on garde son nombre de vue avant suppression
 def DataClean(data_dict):
     for video in data_dict:
         tmp = 0
@@ -25,9 +26,8 @@ def tupleToDict(data_tuple):
 
 # Ecrire dans fichier
 def dictToFile(data_dict, name):
-    fh = open(name + ".json", "w") 
-    fh.write(str(data_day).replace("'","\""))
-    fh.close()
+    with open(name + '.json', 'w', encoding='utf-8') as f:
+        json.dump(data_dict, f, ensure_ascii=False, indent=4)
 
 # Transforme les données en views par categorie
 def toDataCategorie(data_dict):
@@ -46,7 +46,18 @@ def toDataCategorie(data_dict):
         data_cat[t] = d
     return tupleToDict(data_cat)
 
-# compte le nombre de vue pour chaque jour de la semaine
+# Compte le nombre de vue en fonction de la date
+def toTimeView(data_dict):
+    data_time = {}
+    for video in data_dict:
+        for t in data_dict[video]["evolution"]:
+            d = datetime.utcfromtimestamp(t["time"]).strftime('%d-%m-%Y %H:%M:%S')
+            if not(d in data_time):
+                data_time[d] = 0
+            data_time[d] = data_time[d] + t["views"]
+    return data_time
+
+# Compte le nombre de vue pour chaque jour de la semaine
 def toDayView(data_dict):
     data_day = {}
     for video in data_dict:
@@ -69,24 +80,83 @@ def toDayView(data_dict):
             data_day[d] = data_day[d] + v
     return data_day
 
-# Compte le nombre de vue en fonction de la date
-def toTimeView(data_dict):
-    data_time = {}
+# Recupere les videos supprimées
+def deletedVideos(data_dict):
+    videos = {}
+    for video in data_dict:
+        tmp = 0
+        for t in data_dict[video]["evolution"]:
+            if t["percent"] == -1:
+                videos[video] = data_dict[video]
+                break
+    return videos
+
+# Recupere les x pires videos (moins de vue)
+def worseVideos(data_dict, x):
+    videos = {}
     for video in data_dict:
         for t in data_dict[video]["evolution"]:
-            d = datetime.utcfromtimestamp(t["time"]).strftime('%d-%m-%Y %H:%M:%S')
-            if not(d in data_time):
-                data_time[d] = 0
-            data_time[d] = data_time[d] + t["views"]
-    return data_time
+            if t["percent"] == -1:
+                videos[video] = -1
+                break
+            videos[video] = t["views"]
 
+    clear_v = {}
+    for v in videos:
+        if videos[v] != -1:
+            clear_v[v] = videos[v]
 
-with open('data.json') as json_data:
+    v = sorted(clear_v.items(), reverse=False, key=lambda t: t[1])
+    videos = {}
+    del v[x:]
+    for d in v:
+        videos[d[0]] = data_dict[d[0]]
+    return videos
+
+# Recupere les x meilleures videos (nb de vue)
+def bestVideos(data_dict, x):
+    videos = {}
+    for video in data_dict:
+        for t in data_dict[video]["evolution"]:
+            videos[video] = t["views"]
+    v = sorted(videos.items(), reverse=True, key=lambda t: t[1])
+    videos = {}
+    del v[x:]
+    for d in v:
+        videos[d[0]] = data_dict[d[0]]
+    return videos
+
+FILES = True
+
+with open('data/data.json') as json_data:
+
     data_dict = json.load(json_data)
 
-    data_dict = DataClean(data_dict)
+    if FILES:
 
-    data_day = toTimeView(data_dict)
+        data_clean = DataClean(data_dict)
 
-    for d in data_day:
-        print(d + " : " + str(data_day[d]))
+        deleted = deletedVideos(data_dict)
+        dictToFile(deleted, "data/deleted")
+
+        worse = worseVideos(data_dict, 200)
+        dictToFile(worse, "data/worse")
+
+        best = bestVideos(data_dict, 200)
+        dictToFile(worse, "data/best")
+
+        categories = toDataCategorie(data_clean)
+        dictToFile(categories, "data/category")
+
+        days = toDayView(data_clean)
+        dictToFile(days, "data/days")
+
+        views = toTimeView(data_clean)
+        dictToFile(views, "data/views")
+
+    else:
+
+        best = bestVideos(data_dict, 10)
+
+        for d in best:
+            print(d + " : " + str(best[d]["evolution"][-1]["views"]))
