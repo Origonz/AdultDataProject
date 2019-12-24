@@ -75,35 +75,75 @@ def toViewFluctuation(data_dict):
             viewC[d] = 0
         else:
             viewC[d] = data_time[d] - viewL
-            print(d," - ", viewC[d])
             data_fluc[d] = viewC[d] - viewC[last]
         viewL = data_time[d]
         last = d
-    print("------")
     return data_fluc
 
-# Compte le nombre de vue pour chaque jour de la semaine
-# TODO Changer par rapport au fluctuations
-def toDayView(data_dict):
-    data_day = {}
+# Compte la fluctuation de vue en fonction de la date et de la moyenne
+def toViewFluctuationMoyenne(data_dict):
+    data_time = {}
     for video in data_dict:
-        tmp_date = {}
         for t in data_dict[video]["evolution"]:
-            h = datetime.utcfromtimestamp(t["time"]).strftime('%d-%m-%Y')
-            last = datetime.utcfromtimestamp(t["time"] - 86400).strftime('%d-%m-%Y')
-            if last in tmp_date:
-                if h in tmp_date:
-                    v = t["views"] - tmp_date[h]
-                    tmp_date[h] = t["views"]
-                else:
-                    v = t["views"] - tmp_date[last]
-            else:
-                v = t["views"]
-            tmp_date[h] = t["views"]
-            d = datetime.utcfromtimestamp(t["time"]).strftime('%a')
-            if not(d in data_day):
-                data_day[d] = 0
-            data_day[d] = data_day[d] + v
+            d = datetime.utcfromtimestamp(t["time"]).strftime('%d-%m-%Y %H:%M:%S')
+            if not(d in data_time):
+                data_time[d] = 0
+            data_time[d] = data_time[d] + t["views"]
+
+    data_NV = toNewView(data_dict)
+    moyenne = 0
+    for i in data_NV:
+        moyenne = moyenne + data_NV[i]
+    moyenne = round(moyenne / len(data_NV))
+
+    data_flucM = {}
+    viewL = 0
+    last = 0
+    viewC = {}
+    for d in data_time:
+        if last == 0:
+            viewC[d] = 0
+        else:
+            viewC[d] = data_time[d] - viewL
+            data_flucM[d] = viewC[d] - moyenne
+        viewL = data_time[d]
+        last = d
+    data_flucM["Moyenne"] = moyenne
+    return data_flucM
+
+# Compte le nombre de nouvelles vues par date
+def toNewView(data_dict):
+    data_time = {}
+    for video in data_dict:
+        for t in data_dict[video]["evolution"]:
+            d = datetime.utcfromtimestamp(t["time"]).strftime('%d-%m-%Y %H:%M:%S')
+            if not(d in data_time):
+                data_time[d] = 0
+            data_time[d] = data_time[d] + t["views"]
+    data_NV = {}
+    viewL = 0
+    last = 0
+    viewC = {}
+    for d in data_time:
+        if last == 0:
+            viewC[d] = 0
+        else:
+            viewC[d] = data_time[d] - viewL
+            data_NV[d] = viewC[d]
+        viewL = data_time[d]
+        last = d
+    return data_NV
+
+# Compte le nombre de vue pour chaque jour de la semaine en utilisant le nombre de vue ajouté par jour
+def toDayView(data_dict):
+    newView = toNewView(data_dict)
+    data_day = {}
+    for i in newView:
+        datetime_object = datetime.strptime(i, '%d-%m-%Y %H:%M:%S')
+        d = datetime_object.strftime('%a')
+        if not(d in data_day):
+            data_day[d] = 0
+        data_day[d] = data_day[d] + newView[i]
     return data_day
 
 # Recupere les videos supprimées
@@ -152,7 +192,7 @@ def bestVideos(data_dict, x):
         videos[d[0]] = data_dict[d[0]]
     return videos
 
-FILES = False
+FILES = True
 
 with open('data/data.json') as json_data:
 
@@ -180,10 +220,16 @@ with open('data/data.json') as json_data:
         views = toTimeView(data_clean)
         dictToFile(views, "data/views")
 
+        NV = toNewView(data_clean)
+        dictToFile(NV, "data/newView")
+
+        viewsFM = toViewFluctuationMoyenne(data_clean)
+        dictToFile(viewsFM, "data/viewsFM")
+
     else:
 
         data_clean = DataClean(data_dict)
-        fluc = toViewFluctuation(data_clean)
+        fluc = toDayView(data_clean)
 
         for d in fluc:
             print(d + " : " + str(fluc[d]))
