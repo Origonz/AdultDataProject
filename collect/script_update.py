@@ -15,12 +15,13 @@ for x in data:
     url = "https://fr.pornhub.com" + x
     with requests.get(url, stream=True) as r:
         html = r.text
-        soup = BeautifulSoup(html, features="html5lib")
+        soup = BeautifulSoup(html, features="lxml")
         det = soup.find_all(class_="video-action-tab about-tab active")
         if len(det) == 0 :
             view = -1
             percent = -1
             data[x]['tags'] = 'deleted'
+            data[x]['duration'] = 'None'
         else:
             details = det[0]
             views = int(details.find_all(class_='count')[0].text.replace(" ", ""))

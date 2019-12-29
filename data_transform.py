@@ -46,7 +46,7 @@ def toDataCategorie(data_dict):
         data_cat[t] = d
     return tupleToDict(data_cat)
 
-# Transforme les données en views par categorie
+# Transforme les données en views par mots
 def toDataTitleWords(data_dict):
     data_cat = {}
     for video in data_dict:
@@ -59,6 +59,41 @@ def toDataTitleWords(data_dict):
                 if not(c in data_cat[d]):
                     data_cat[d][c] = 0
                 data_cat[d][c] = data_cat[d][c] + t["views"]
+    for t in data_cat:
+        d = sorted(data_cat[t].items(), reverse=True, key=lambda t: t[1])
+        data_cat[t] = d
+    return tupleToDict(data_cat)
+
+# Transforme les données en views par tags
+def toDataTags(data_dict):
+    data_cat = {}
+    for video in data_dict:
+        for t in data_dict[video]["evolution"]:
+            d = datetime.utcfromtimestamp(t["time"]).strftime('%d-%m-%Y %H:%M:%S')
+            if not(d in data_cat):
+                data_cat[d] = {}
+            for c in data_dict[video]["tags"]:
+                c = c.lower()
+                if not(c in data_cat[d]):
+                    data_cat[d][c] = 0
+                data_cat[d][c] = data_cat[d][c] + t["views"]
+    for t in data_cat:
+        d = sorted(data_cat[t].items(), reverse=True, key=lambda t: t[1])
+        data_cat[t] = d
+    return tupleToDict(data_cat)
+
+# Transforme les données en views par tags
+def toDataDuration(data_dict):
+    data_cat = {}
+    for video in data_dict:
+        for t in data_dict[video]["evolution"]:
+            d = datetime.utcfromtimestamp(t["time"]).strftime('%d-%m-%Y %H:%M:%S')
+            if not(d in data_cat):
+                data_cat[d] = {}
+            c = data_dict[video]["duration"]
+            if not(c in data_cat[d]):
+                data_cat[d][c] = 0
+            data_cat[d][c] = data_cat[d][c] + t["views"]
     for t in data_cat:
         d = sorted(data_cat[t].items(), reverse=True, key=lambda t: t[1])
         data_cat[t] = d
@@ -244,11 +279,19 @@ with open('data/data.json') as json_data:
         viewsFM = toViewFluctuationMoyenne(data_clean)
         dictToFile(viewsFM, "data/viewsFM")
 
+        dur = toDataDuration(data_clean)["11-12-2019 09:00:02"] #TODO
+        dictToFile(dur, "data/Duration")
+
+        tags = toDataTags(data_clean)["11-12-2019 09:00:02"] #TODO
+        dictToFile(tags, "data/Tags")
+
+        title = toDataTitleWords(data_clean)["11-12-2019 09:00:02"] #TODO
+        dictToFile(title, "data/TitleWords")
+
     else:
 
         data_clean = DataClean(data_dict)
-        fluc = toDataTitleWords(data_clean)["11-12-2019 09:00:02"]
-        dictToFile(fluc, "data/TitleWords")
-        exit()
+        fluc = toViewFluctuationMoyenne(data_clean)
+
         for d in fluc:
             print(d + " : " + str(fluc[d]))
