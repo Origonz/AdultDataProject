@@ -20,6 +20,7 @@ for x in data:
         if len(det) == 0 :
             view = -1
             percent = -1
+            data[x]['tags'] = 'deleted'
         else:
             details = det[0]
             views = int(details.find_all(class_='count')[0].text.replace(" ", ""))
