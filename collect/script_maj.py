@@ -20,6 +20,7 @@ for x in data:
         if len(det) == 0 :
             view = -1
             percent = -1
+            data[x]['tags'] = 'deleted'
         else:
             details = det[0]
             if "tags" not in data[x]:
