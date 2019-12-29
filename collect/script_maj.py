@@ -22,9 +22,6 @@ for x in data:
             percent = -1
         else:
             details = det[0]
-            views = int(details.find_all(class_='count')[0].text.replace(" ", ""))
-            percent = int(details.find_all(class_='percent')[0].text.split('%')[0])
-
             if "tags" not in data[x]:
                 tags = details.find_all(class_='tagsWrapper')[0].find_all('a')
                 listTags = []
@@ -41,10 +38,8 @@ for x in data:
                 except AttributeError:
                     time = None
                 data[x]['duration'] = time 
-        
-        data[x]['evolution'].append({"time": time, "views": views, "percent": percent})  
-        
-            
+
+
 with open("data.json", "w") as f:
     json.dump(data, f)
 
