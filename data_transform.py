@@ -245,7 +245,7 @@ def bestVideos(data_dict, x):
         videos[d[0]] = data_dict[d[0]]
     return videos
 
-FILES = False
+FILES = True
 
 with open('data/data.json') as json_data:
 
@@ -262,7 +262,7 @@ with open('data/data.json') as json_data:
         dictToFile(worse, "data/worse")
 
         best = bestVideos(data_dict, 200)
-        dictToFile(worse, "data/best")
+        dictToFile(best, "data/best")
 
         categories = toDataCategorie(data_clean)
         dictToFile(categories, "data/category")
