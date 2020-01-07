@@ -24,6 +24,31 @@ def tupleToDict(data_tuple):
             data_dict[d][c[0]] = c[1]
     return data_dict
 
+def nameToRef(data_dict):
+    dict_cat = {}
+    cat = []
+    ano = []
+    for video in data_dict:
+        for c in data_dict[video]["categories"]:
+            if not(c in cat):
+               cat.append(c)
+
+    for c in cat:
+        fin = True
+        s = c.split(" ")
+        nb = 0
+        while fin:
+            nb = nb + 1
+            r = ""
+            for m in s:
+                r = r + m[:nb]
+            if not(r in ano) :
+                ano.append(r)
+                cat.remove(c)
+                dict_cat[c] = r
+                fin = False
+    return dict_cat
+
 # Ecrire dans fichier
 def dictToFile(data_dict, name):
     with open(name + '.json', 'w', encoding='utf-8') as f:
@@ -280,18 +305,43 @@ with open('data/data.json') as json_data:
         dictToFile(viewsFM, "data/viewsFM")
 
         dur = toDataDuration(data_clean)["11-12-2019 09:00:02"] #TODO
-        dictToFile(dur, "data/Duration")
+        dictToFile(dur, "data/duration")
 
         tags = toDataTags(data_clean)["11-12-2019 09:00:02"] #TODO
-        dictToFile(tags, "data/Tags")
+        dictToFile(tags, "data/tags")
 
         title = toDataTitleWords(data_clean)["11-12-2019 09:00:02"] #TODO
-        dictToFile(title, "data/TitleWords")
+        dictToFile(title, "data/titleWords")
+
+        ntr = nameToRef(data_clean)
+        dictToFile(ntr, "data/catAno")
 
     else:
 
         data_clean = DataClean(data_dict)
-        fluc = toViewFluctuationMoyenne(data_clean)
+        fluc = nameToRef(data_clean)
+        print(fluc)
+
+        dic = {}
+
+        for d in fluc:
+            if not(fluc[d] in dic):
+                dic[fluc[d]] = 0
+            dic[fluc[d]] = dic[fluc[d]] + 1 
+
+        i = {}
+
+        for d in dic:
+            for c in fluc:
+                if fluc[c] == d and dic[d] > 1 :
+                    if not(d in i):
+                        i[d] = []
+                    i[d].append(c)
+        
+
 
         for d in fluc:
             print(d + " : " + str(fluc[d]))
+
+#        for d in fluc:
+#            print(d + " : " + str(fluc[d]))
