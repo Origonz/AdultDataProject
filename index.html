@@ -412,7 +412,117 @@
 
     <div class="container-fluid bg-1 text-center" id="days">
       <div class="col-sm-8">
-        <div id="days_graph"></div>
+        <div id="days_graph">
+			<script>
+				var width = 700;
+				var height = 300;
+				var marginWidth = width * 0.2;
+				var marginHeight = height * 0.2;
+				
+				var svg_days = d3.select("#days_graph").append("svg")
+				  .attr("width", width)
+				  .attr("height", height)
+				
+				svg_days.append("text")
+				  .text("Consommation de vidéos adultes en fonction des jours")
+				  .attr("y", height * 0.05)
+				  .attr("x", width * 0.2)
+				  .attr("font-size", width * 0.02)
+				  .attr("font-family", "monospace")
+				
+				var days;
+				
+				
+				d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/days.json", function(data){
+				  
+				  days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+				  
+				  
+				  var dataParsed = days.map( 
+					function(key) {
+					  var dict = {};
+					  dict["day"] = key
+					  dict["value"] = parseInt(data[key])
+					  return dict;
+					}
+				  )
+				  //console.log(dataParsed)
+				  
+				  
+				  var total = 0;
+				  dataParsed.map(function(d){
+					total += d.value
+				  })
+				  
+				  
+				  
+				  maxima = 0
+				  
+						dataParsed.forEach(function(d){
+					if (d["value"] > maxima){
+					  maxima = d["value"]
+					}
+					})
+					
+					//console.log(maxima)
+				  
+				  
+				  var height_ = d3.scaleLinear()
+				  .domain([0,maxima])
+				  .range([0 , height - marginHeight]);
+				  
+				  var x = d3.scaleLinear()
+				  .domain([0,days.length])
+				  .range([marginWidth, width * 0.95 ]);
+				  
+				  var yperCent = d3.scaleLinear()
+				  .domain([0,Math.floor(1 + maxima/total * 100)])
+				  .range([height - marginHeight / 2 , marginHeight / 2]);
+				   
+				  
+				  svg_days.selectAll("rect").data(dataParsed).enter()
+						  .append("rect")
+						  .attr("height", function(d) { 
+					  return height_(d.value); 
+					}).attr("width", (width - marginWidth) * 0.90 / (days.length + 1))
+						  .attr("y", function(d) { 
+					return  height - marginHeight/2 - height_(d.value); })
+						  .attr("x",  function(d,i) { return x(i); })
+						  .style("fill", function(d){ return "red"})
+				  
+				  
+				  svg_days.selectAll("text25").data(dataParsed).enter()
+				  .append("text")
+				  .text(function(d){ return d.day })
+				  .attr("x", function(d,i){return x(i) + ((width - marginWidth) / (days.length +1))/2})
+				  .attr("y", height - marginHeight / 4)
+				  .attr("font-size", 12)
+				  .attr("font-family", "monospace");
+				  
+				  
+				  var tab = []
+					for(let i = 0; i < 1 + maxima/total * 100; i++){
+					tab.push(i)
+				  }
+				  
+				  svg_days.selectAll("text54").data(tab).enter()
+				  .append("text")
+				  .text(function(d){
+					return d + "%"
+				  })
+				  .attr("y", function(d,i){
+					return yperCent(d);
+				  })
+				  .attr("x", margin/2)
+				  .attr("font-size", 12)
+				  .attr("font-family", "monospace");
+				  
+				});
+				  
+				
+				
+			  </script>	
+		</div>
       </div>
       <div class="col-sm-4">
         <p>
