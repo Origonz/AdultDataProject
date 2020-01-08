@@ -1,400 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <!-- Theme Made By www.w3schools.com - No Copyright -->
+    <title>AdultDataProject</title>
+    <meta charset="utf-8" />
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat"
+      rel="stylesheet"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+      body {
+        font: 20px Montserrat, sans-serif;
+        line-height: 1.8;
+        color: #080808;
+      }
 
-<head>
-  <!-- Theme Made By www.w3schools.com - No Copyright -->
-  <title>AdultDataProject</title>
-  <meta charset="utf-8" />
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
-  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <style>
-    body {
-      font: 20px Montserrat, sans-serif;
-      line-height: 1.8;
-      color: #080808;
-    }
+      p {
+        font-size: 16px;
+      }
 
-    p {
-      font-size: 16px;
-    }
+      .margin {
+        margin-bottom: 45px;
+      }
 
-    .margin {
-      margin-bottom: 45px;
-    }
+      .bg-1 {
+        background-color: #f5f6f7;
+        /* Green */
+        color: #000000;
+      }
 
-    .bg-1 {
-      background-color: #f5f6f7;
-      /* Green */
-      color: #000000;
-    }
+      .bg-2 {
+        background-color: #474e5d;
+        /* Dark Blue */
+        color: #ffffff;
+      }
 
-    .bg-2 {
-      background-color: #474e5d;
-      /* Dark Blue */
-      color: #ffffff;
-    }
+      .bg-3 {
+        background-color: #ffffff;
+        /* White */
+        color: #555555;
+      }
 
-    .bg-3 {
-      background-color: #ffffff;
-      /* White */
-      color: #555555;
-    }
+      .bg-4 {
+        background-color: #2f2f2f;
+        /* Black Gray */
+        color: #fff;
+      }
 
-    .bg-4 {
-      background-color: #2f2f2f;
-      /* Black Gray */
-      color: #fff;
-    }
+      .container-fluid {
+        padding-top: 70px;
+        padding-bottom: 70px;
+      }
 
-    .container-fluid {
-      padding-top: 70px;
-      padding-bottom: 70px;
-    }
+      .navbar {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        border: 0;
+        border-radius: 0;
+        margin-bottom: 0;
+        font-size: 12px;
+        letter-spacing: 5px;
+      }
 
-    .navbar {
-      padding-top: 15px;
-      padding-bottom: 15px;
-      border: 0;
-      border-radius: 0;
-      margin-bottom: 0;
-      font-size: 12px;
-      letter-spacing: 5px;
-    }
+      .navbar-nav li a:hover {
+        color: #1abc9c !important;
+      }
+    </style>
+  </head>
 
-    .navbar-nav li a:hover {
-      color: #1abc9c !important;
-    }
-  </style>
-</head>
-
-<body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#home">AdultDataProject</a>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button
+            type="button"
+            class="navbar-toggle"
+            data-toggle="collapse"
+            data-target="#myNavbar"
+          >
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#home">AdultDataProject</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#category">Category</a></li>
+            <li><a href="#views">Views</a></li>
+            <li><a href="#days">Days</a></li>
+            <li><a href="#cost">Costs</a></li>
+            <li><a href="#visu">Visu</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="collapse navbar-collapse" id="myNavbar">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="#category">Category</a></li>
-          <li><a href="#views">Views</a></li>
-          <li><a href="#days">Days</a></li>
-          <li><a href="#cost">Costs</a></li>
-          <li><a href="#visu">Visu</a></li>
-        </ul>
+    </nav>
+
+    <!-- Home -->
+    <div class="container-fluid bg-1 text-center" id="home">
+      <div class="col-sm-4">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </div>
+      <div class="col-sm-8">
+        <div id="home_graph"></div>
       </div>
     </div>
-  </nav>
 
-  <!-- Home -->
-  <div class="container-fluid bg-1 text-center" id="home">
-    <div class="col-sm-4">
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </p>
+    <div class="container-fluid bg-1 text-center" id="category">
+      <div class="col-sm-8">
+        <div id="category_graph"></div>
+      </div>
+      <div class="col-sm-4">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </div>
     </div>
-    <div class="col-sm-8">
-      <div id="home_graph"></div>
-    </div>
-  </div>
 
-  <div class="container-fluid bg-1 text-center" id="category">
-    <div class="col-sm-8">
-      <div id="category_graph"></div>
-    </div>
-    <div class="col-sm-4">
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </p>
-    </div>
-  </div>
+    <div class="container-fluid bg-1 text-center" id="views">
+      <div class="col-sm-4">
+        <p>
+          Ce graphe présente l'évolution du nombre de vue en fonction de la
+          date. Ainsi, les jours de grandes influences sont visible pour
+          déterminer les periodes qui génére un grand trafic. Il peut être
+          interessant de proposer des solutions lors des periodes creuses afin
+          de réduire la consomation d'énergie du site.
+        </p>
+      </div>
+      <div class="col-sm-8">
+        <div id="views_graph">
+          <script>
+            // Set the dimensions of the canvas / graph
+            var marginviews = { top: 70, right: 50, bottom: 30, left: 70 },
+              widthviews = 600 - marginviews.left - marginviews.right,
+              heightviews = 270 - marginviews.top - marginviews.bottom;
 
-  <div class="container-fluid bg-1 text-center" id="views">
-    <div class="col-sm-4">
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </p>
-    </div>
-    <div class="col-sm-8">
-      <div id="views_graph"></div>
-    </div>
-  </div>
+            // Parse the date / time
+            // "29-11-2019 21:00:02"
+            var parseDateviews = d3.timeParse("%d-%m-%Y %H:%M:%S");
 
-  <div class="container-fluid bg-1 text-center" id="days">
-    <div class="col-sm-8">
-      <div id="days_graph"></div>
-    </div>
-    <div class="col-sm-4">
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </p>
-    </div>
-  </div>
+            // Set the ranges
+            var xviews = d3.scaleTime().range([0, widthviews]);
+            var yviews = d3.scaleLinear().range([heightviews, 0]);
 
-  <div class="container-fluid bg-1 text-center" id="cost">
-    <div class="col-sm-4">
-      <p>
-        Ce graphe présente les vidéos collectées par rapport à leurs durées en secondes
-        et leurs nombres de vues. Ainsi, les vidéos les plus longues représentent un enjeu en terme
-        de stockage dans les datacenters et les vidéos les plus vues un enjeu en trafic.
+            // Define the axes
 
-        On peut voir que la majorité des vidéos qui sont stockées dans les datacenters sont très peu vues, 
-        il serait intéressant de procéder à un "nettoyage" quand une vidéo est assez longue et 
-        ne rencontre pas une certaine popularité, en vu de réduire les consommations énergétiques.
-      </p>
-    </div>
-    <div class="col-sm-8">
-      <div id="cost_graph">
+            var xAxisviews = d3.axisBottom(xviews).ticks(5);
+            var yAxisviews = d3.axisLeft(yviews).ticks(5);
 
-        <script>
-          var margin = {
-            top: 40,
-            right: 40,
-            bottom: 30,
-            left: 150
-          };
-          width = 900 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
-
-          // append the svg object to the body of the page
-          var svg = d3.select("#cost")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
-
-          d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/data.json", function (json) {
-
-            var data_raw = Array.from(Object.values(json))
-            var data = []
-
-
-            data_raw.map(function (d) {
-              if (d.duration != 'None')
-                data.push(d)
-            })
-
-
-            data.map(function (d) {
-              view = d3.max(d.evolution, function (t) {
-                return +t.views
+            // Define the line
+            var valuelineviews = d3
+              .line()
+              .x(function(d) {
+                return xviews(d.date);
               })
-              d.view = view
-            })
+              .y(function(d) {
+                return yviews(d.views);
+              });
 
+            // Adds the svg canvas
+            var svgviews = d3
+              .select("#views_graph")
+              .append("svg")
+              .attr("width", widthviews + marginviews.left + marginviews.right)
+              .attr(
+                "height",
+                heightviews + marginviews.top + marginviews.bottom
+              )
+              .append("g")
+              .attr(
+                "transform",
+                "translate(" + marginviews.left + "," + marginviews.top + ")"
+              );
 
-            var x = d3.scaleLinear()
-              .range([0, width])
-              .nice();
+            function addTooltip() {
+              // Création d'un groupe qui contiendra tout le tooltip plus le cercle de suivi
+              var tooltip = svgviews
+                .append("g")
+                .attr("id", "tooltip")
+                .style("display", "none");
 
-            var y = d3.scaleLinear()
-              .range([height, 0]);
-
-            var xAxis = d3.axisBottom(x).ticks(12),
-              yAxis = d3.axisLeft(y).ticks(12 * height / width);
-
-            var brush = d3.brush().extent([
-              [0, 0],
-              [width, height]
-            ]).on("end", brushended),
-              idleTimeout,
-              idleDelay = 350;
-
-
-            var tooltip = d3.select("#cost")
-              .append("div")
-              .style("opacity", 0)
-              .attr("class", "tooltip")
-              .style("background-color", "white")
-              .style("border", "solid")
-              .style("border-width", "1px")
-              .style("border-radius", "5px")
-              .style("padding", "10px")
-
-            var mouseover = function (d) {
-              console.log(d)
-              console.log("Test")
+              // Le cercle extérieur bleu clair
               tooltip
+                .append("circle")
+                .attr("fill", "#CCE5F6")
+                .attr("r", 10);
 
-                .style("opacity", 1)
+              // Le cercle intérieur bleu foncé
+              tooltip
+                .append("circle")
+                .attr("fill", "#3498db")
+                .attr("stroke", "#fff")
+                .attr("stroke-width", "1.5px")
+                .attr("r", 4);
+
+              // Le tooltip en lui-même avec sa pointe vers le bas
+              // Il faut le dimensionner en fonction du contenu
+              tooltip
+                .append("polyline")
+                .attr("points", "0,0 0,40 55,40 60,45 65,40 120,40 120,0 0,0")
+                .style("fill", "#f9f9f9")
+                .style("stroke", "#3498db")
+                .style("opacity", "0.9")
+                .style("stroke-width", "1")
+                .attr("transform", "translate(-60, -55)");
+
+              // Cet élément contiendra tout notre texte
+              var textviews = tooltip
+                .append("text")
+                .style("font-size", "13px")
+                .style("font-family", "Segoe UI")
+                .style("color", "#333333")
+                .style("fill", "#333333")
+                .attr("transform", "translate(-42, -40)");
+
+              // Element pour la date avec positionnement spécifique
+              textviews
+                .append("tspan")
+                .attr("dx", "-20")
+                .attr("id", "tooltip-date");
+
+              // Positionnement spécifique pour le petit rond	bleu
+              textviews
+                .append("tspan")
+                .style("fill", "#3498db")
+                .attr("dx", "-120")
+                .attr("dy", "15")
+                .text("●");
+
+              // Le texte "Cours : "
+              textviews
+                .append("tspan")
+                .attr("dx", "5")
+                .text("Views : ");
+
+              // Le texte pour la valeur de l'or à la date sélectionnée
+              textviews
+                .append("tspan")
+                .attr("id", "tooltip-close")
+                .style("font-weight", "bold");
+
+              return tooltip;
             }
 
-            var mousemove = function (d) {
-              console.log(d)
-              console.log("Test")
-              tooltip
+            var tooltip = addTooltip();
 
-              /*
+            var bisectDate = d3.bisector(function(d) {
+              return d.date;
+            }).left;
+
+            // Get the data
+            d3.csv(
+              "https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/newView.csv",
+              function(error, data) {
+                data.forEach(function(d) {
+                  d.dateO = d.date;
+                  d.date = parseDateviews(d.date);
+                  d.views = +d.views;
+                });
+
+                // Scale the range of the data
+                xviews.domain(
+                  d3.extent(data, function(d) {
+                    return d.date;
+                  })
+                );
+                yviews.domain([
+                  0,
+                  d3.max(data, function(d) {
+                    return d.views;
+                  })
+                ]);
+
+                // Add the valueline path.
+                svgviews
+                  .append("path")
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "steelblue")
+                  .attr("stroke-width", 1.5)
+                  .attr("d", valuelineviews(data));
+
+                // Add the X Axis
+                svgviews
+                  .append("g")
+                  .attr("class", "x axis")
+                  .attr("transform", "translate(0," + heightviews + ")")
+                  .call(xAxisviews);
+
+                // Add the Y Axis
+                svgviews
+                  .append("g")
+                  .attr("class", "y axis")
+                  .call(yAxisviews);
+
+                function mousemoveviews() {
+                  var x0views = xviews.invert(d3.mouse(this)[0]),
+                    iviews = bisectDate(data, x0views),
+                    dviews = data[iviews];
+
+                  tooltip.attr(
+                    "transform",
+                    "translate(" +
+                      xviews(dviews.date) +
+                      "," +
+                      yviews(dviews.views) +
+                      ")"
+                  );
+
+                  d3.select("#tooltip-date").text(dviews.dateO);
+                  d3.select("#tooltip-close").text(dviews.views);
+                }
+
+                svgviews
+                  .append("rect")
+                  .attr("class", "overlay")
+                  .attr("width", widthviews)
+                  .attr("fill", "transparent")
+                  .attr("height", heightviews)
+                  .on("mouseover", function() {
+                    tooltip.style("display", null);
+                  })
+                  .on("mouseout", function() {
+                    tooltip.style("display", "none");
+                  })
+                  .on("mousemove", mousemoveviews);
+
+                svgviews
+                  .append("text")
+                  .attr("x", widthviews / 2)
+                  .attr("y", 0 - marginviews.top / 2)
+                  .attr("text-anchor", "middle")
+                  .style("font-size", "16px")
+                  .style("text-decoration", "underline")
+                  .text("Evolution du nombre de vue par date");
+              }
+            );
+          </script>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid bg-1 text-center" id="days">
+      <div class="col-sm-8">
+        <div id="days_graph"></div>
+      </div>
+      <div class="col-sm-4">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </div>
+    </div>
+
+    <div class="container-fluid bg-1 text-center" id="cost">
+      <div class="col-sm-4">
+        <p>
+          Ce graphe présente les vidéos collectées par rapport à leurs durées en
+          secondes et leurs nombres de vues. Ainsi, les vidéos les plus longues
+          représentent un enjeu en terme de stockage dans les datacenters et les
+          vidéos les plus vues un enjeu en trafic. On peut voir que la majorité
+          des vidéos qui sont stockées dans les datacenters sont très peu vues,
+          il serait intéressant de procéder à un "nettoyage" quand une vidéo est
+          assez longue et ne rencontre pas une certaine popularité, en vu de
+          réduire les consommations énergétiques.
+        </p>
+      </div>
+      <div class="col-sm-8">
+        <div id="cost_graph">
+          <script>
+            var margin = {
+              top: 40,
+              right: 40,
+              bottom: 30,
+              left: 150
+            };
+            (width = 900 - margin.left - margin.right),
+              (height = 500 - margin.top - margin.bottom);
+
+            // append the svg object to the body of the page
+            var svg = d3
+              .select("#cost")
+              .append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .attr(
+                "transform",
+                "translate(" + margin.left + "," + margin.top + ")"
+              );
+
+            d3.json(
+              "https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/data.json",
+              function(json) {
+                var data_raw = Array.from(Object.values(json));
+                var data = [];
+
+                data_raw.map(function(d) {
+                  if (d.duration != "None") data.push(d);
+                });
+
+                data.map(function(d) {
+                  view = d3.max(d.evolution, function(t) {
+                    return +t.views;
+                  });
+                  d.view = view;
+                });
+
+                var x = d3
+                  .scaleLinear()
+                  .range([0, width])
+                  .nice();
+
+                var y = d3.scaleLinear().range([height, 0]);
+
+                var xAxis = d3.axisBottom(x).ticks(12);
+                var yAxis = d3.axisLeft(y).ticks((12 * height) / width);
+
+                var brush = d3
+                    .brush()
+                    .extent([
+                      [0, 0],
+                      [width, height]
+                    ])
+                    .on("end", brushended),
+                  idleTimeout,
+                  idleDelay = 350;
+
+                var tooltip = d3
+                  .select("#cost")
+                  .append("div")
+                  .style("opacity", 0)
+                  .attr("class", "tooltip")
+                  .style("background-color", "white")
+                  .style("border", "solid")
+                  .style("border-width", "1px")
+                  .style("border-radius", "5px")
+                  .style("padding", "10px");
+
+                var mouseover = function(d) {
+                  console.log(d);
+                  console.log("Test");
+                  tooltip.style("opacity", 1);
+                };
+
+                var mousemove = function(d) {
+                  console.log(d);
+                  console.log("Test");
+                  tooltip;
+
+                  /*
               .style("left", (d3.mouse(this)[0] + 90) +
                   "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
               .style("top", (d3.mouse(this)[1]) + "px")
               */
-            }
+                };
 
-            var mouseleave = function (d) {
-              console.log(d)
-              console.log("Test")
-              tooltip
-                .transition()
-                .duration(200)
-                .style("opacity", 0)
-            }
+                var mouseleave = function(d) {
+                  console.log(d);
+                  console.log("Test");
+                  tooltip
+                    .transition()
+                    .duration(200)
+                    .style("opacity", 0);
+                };
 
-            var clip = svg.append("defs").append("svg:clipPath")
-              .attr("id", "clip")
-              .append("svg:rect")
-              .attr("width", width)
-              .attr("height", height)
-              .attr("x", 0)
-              .attr("y", 0);
+                var clip = svg
+                  .append("defs")
+                  .append("svg:clipPath")
+                  .attr("id", "clip")
+                  .append("svg:rect")
+                  .attr("width", width)
+                  .attr("height", height)
+                  .attr("x", 0)
+                  .attr("y", 0);
 
-            var xExtent = d3.extent(data, function (d) {
-              return d.duration;
-            });
-
-            var yExtent = d3.extent(data, function (d) {
-              return d.view;
-            });
-
-            x.domain(d3.extent(data, function (d) {
-
-              return d.duration;
-            })).nice();
-            y.domain(d3.extent(data, function (d) {
-              return d.view;
-            })).nice();
-
-            var scatter = svg.append("g")
-              .attr("id", "scatterplot")
-              .attr("clip-path", "url(#clip)");
-
-            scatter.selectAll(".dot")
-              .data(data)
-              .enter().append("circle")
-              .attr("class", "dot")
-              .attr("r", 4)
-              .attr("cx", function (d) {
-                return x(d.duration);
-              })
-              .attr("cy", function (d) {
-                return y(d.view);
-              })
-              .attr("opacity", 0.5)
-              .style("fill", "#4292c6")
-              .style('pointer-events', 'none')
-              .on("mousemove", mousemove)
-              .on("mouseout", mouseleave)
-              .on("mouseover", mouseover);;
-
-
-            // x axis
-            svg.append("g")
-              .attr("class", "x axis")
-              .attr('id', "axis--x")
-              .attr("transform", "translate(0," + height + ")")
-              .call(xAxis);
-
-            svg.append("text")
-              .style("text-anchor", "end")
-              .attr("x", width)
-              .attr("y", height - 8)
-              .text("Durée");
-
-            // y axis
-            svg.append("g")
-              .attr("class", "y axis")
-              .attr('id', "axis--y")
-              .call(yAxis);
-
-            svg.append("text")
-              .attr("transform", "rotate(-90)")
-              .attr("y", 6)
-              .attr("dy", "1em")
-              .style("text-anchor", "end")
-              .text("Vues");
-
-            scatter.append("g")
-              .attr("class", "brush")
-              .call(brush);
-
-
-            function brushended() {
-
-              var s = d3.event.selection;
-              if (!s) {
-                if (!idleTimeout) return idleTimeout = setTimeout(idled, idleDelay);
-                x.domain(d3.extent(data, function (d) {
+                var xExtent = d3.extent(data, function(d) {
                   return d.duration;
-                })).nice();
-                y.domain(d3.extent(data, function (d) {
-                  return d.view;
-                })).nice();
-              } else {
-                x.domain([s[0][0], s[1][0]].map(x.invert, x));
-                y.domain([s[1][1], s[0][1]].map(y.invert, y));
-                scatter.select(".brush").call(brush.move, null);
-              }
-              zoom();
-            }
-
-            function idled() {
-              idleTimeout = null;
-            }
-
-            function zoom() {
-
-              var t = scatter.transition().duration(750);
-              svg.select("#axis--x").transition(t).call(xAxis);
-              svg.select("#axis--y").transition(t).call(yAxis);
-              scatter.selectAll("circle").transition(t)
-                .attr("cx", function (d) {
-                  return x(d.duration);
-                })
-                .attr("cy", function (d) {
-                  return y(d.view);
                 });
-            }
 
-          });
-        </script>
+                var yExtent = d3.extent(data, function(d) {
+                  return d.view;
+                });
 
+                x.domain(
+                  d3.extent(data, function(d) {
+                    return d.duration;
+                  })
+                ).nice();
+                y.domain(
+                  d3.extent(data, function(d) {
+                    return d.view;
+                  })
+                ).nice();
+
+                var scatter = svg
+                  .append("g")
+                  .attr("id", "scatterplot")
+                  .attr("clip-path", "url(#clip)");
+
+                scatter
+                  .selectAll(".dot")
+                  .data(data)
+                  .enter()
+                  .append("circle")
+                  .attr("class", "dot")
+                  .attr("r", 4)
+                  .attr("cx", function(d) {
+                    return x(d.duration);
+                  })
+                  .attr("cy", function(d) {
+                    return y(d.view);
+                  })
+                  .attr("opacity", 0.5)
+                  .style("fill", "#4292c6")
+                  .style("pointer-events", "none")
+                  .on("mousemove", mousemove)
+                  .on("mouseout", mouseleave)
+                  .on("mouseover", mouseover);
+
+                // x axis
+                svg
+                  .append("g")
+                  .attr("class", "x axis")
+                  .attr("id", "axis--x")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(xAxis);
+
+                svg
+                  .append("text")
+                  .style("text-anchor", "end")
+                  .attr("x", width)
+                  .attr("y", height - 8)
+                  .text("Durée");
+
+                // y axis
+                svg
+                  .append("g")
+                  .attr("class", "y axis")
+                  .attr("id", "axis--y")
+                  .call(yAxis);
+
+                svg
+                  .append("text")
+                  .attr("transform", "rotate(-90)")
+                  .attr("y", 6)
+                  .attr("dy", "1em")
+                  .style("text-anchor", "end")
+                  .text("Vues");
+
+                scatter
+                  .append("g")
+                  .attr("class", "brush")
+                  .call(brush);
+
+                function brushended() {
+                  var s = d3.event.selection;
+                  if (!s) {
+                    if (!idleTimeout)
+                      return (idleTimeout = setTimeout(idled, idleDelay));
+                    x.domain(
+                      d3.extent(data, function(d) {
+                        return d.duration;
+                      })
+                    ).nice();
+                    y.domain(
+                      d3.extent(data, function(d) {
+                        return d.view;
+                      })
+                    ).nice();
+                  } else {
+                    x.domain([s[0][0], s[1][0]].map(x.invert, x));
+                    y.domain([s[1][1], s[0][1]].map(y.invert, y));
+                    scatter.select(".brush").call(brush.move, null);
+                  }
+                  zoom();
+                }
+
+                function idled() {
+                  idleTimeout = null;
+                }
+
+                function zoom() {
+                  var t = scatter.transition().duration(750);
+                  svg
+                    .select("#axis--x")
+                    .transition(t)
+                    .call(xAxis);
+                  svg
+                    .select("#axis--y")
+                    .transition(t)
+                    .call(yAxis);
+                  scatter
+                    .selectAll("circle")
+                    .transition(t)
+                    .attr("cx", function(d) {
+                      return x(d.duration);
+                    })
+                    .attr("cy", function(d) {
+                      return y(d.view);
+                    });
+                }
+              }
+            );
+          </script>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="container-fluid bg-1 text-center" id="visu">
-    <div class="col-sm-8">
-      <div id="visu_graph"></div>
+    <div class="container-fluid bg-1 text-center" id="visu">
+      <div class="col-sm-8">
+        <div id="visu_graph"></div>
+      </div>
+      <div class="col-sm-4">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </div>
     </div>
-    <div class="col-sm-4">
+
+    <!-- Footer -->
+    <footer class="container-fluid bg-4 text-center">
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        AdultDataProject
       </p>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="container-fluid bg-4 text-center">
-    <p>
-      AdultDataProject
-    </p>
-  </footer>
-</body>
-
+    </footer>
+  </body>
 </html>
