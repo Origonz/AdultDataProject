@@ -1,0 +1,40 @@
+import requests 
+import json
+from bs4 import BeautifulSoup
+from datetime import datetime
+import time
+import re
+
+with open("data.json", "r") as f:
+    data = json.load(f)
+
+
+time = datetime.timestamp(datetime.now())
+
+for x in data:
+    if "duration" not in data[x] or data[x]['duration'] is None:
+        url = "https://fr.pornhub.com" + x
+        with requests.get(url, stream=True) as r:
+            html = r.text
+            soup = BeautifulSoup(html, features="lxml")
+            det = soup.find_all(class_="video-action-tab about-tab active")
+            if len(det) == 0 :
+                view = -1
+                percent = -1
+                data[x]['tags'] = 'deleted'
+                data[x]['duration'] = 'None'
+            else:
+                try:
+                    time_script = soup.find_all(class_="original mainPlayerDiv")[0].find("script")
+                    pattern = re.compile("\"video_duration\":\"\d+\"") 
+                    var = pattern.search(time_script.text)
+                    time = var.group().split("\"")[3]
+                except AttributeError:
+                    time = None
+                data[x]['duration'] = time 
+
+
+with open("data.json", "w") as f:
+    json.dump(data, f)
+
+
