@@ -1,174 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Theme Made By www.w3schools.com - No Copyright -->
-    <title>AdultDataProject</title>
-    <meta charset="utf-8" />
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css?family=Montserrat"
-      rel="stylesheet"
-    />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <style>
-      body {
-        font: 20px Montserrat, sans-serif;
-        line-height: 1.8;
-        color: #f5f6f7;
-      }
-      p {
-        font-size: 16px;
-      }
-      .margin {
-        margin-bottom: 45px;
-      }
-      .bg-1 {
-        background-color: #1abc9c; /* Green */
-        color: #ffffff;
-      }
-      .bg-2 {
-        background-color: #474e5d; /* Dark Blue */
-        color: #ffffff;
-      }
-      .bg-3 {
-        background-color: #ffffff; /* White */
-        color: #555555;
-      }
-      .bg-4 {
-        background-color: #2f2f2f; /* Black Gray */
-        color: #fff;
-      }
-      .container-fluid {
-        padding-top: 70px;
-        padding-bottom: 70px;
-      }
-      .navbar {
-        padding-top: 15px;
-        padding-bottom: 15px;
-        border: 0;
-        border-radius: 0;
-        margin-bottom: 0;
-        font-size: 12px;
-        letter-spacing: 5px;
-      }
-      .navbar-nav li a:hover {
-        color: #1abc9c !important;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button
-            type="button"
-            class="navbar-toggle"
-            data-toggle="collapse"
-            data-target="#myNavbar"
-          >
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#home">AdultDataProject</a>
-        </div>
-        <div class="collapse navbar-collapse" id="myNavbar">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#category">Category</a></li>
-            <li><a href="#views">Views</a></li>
-            <li><a href="#days">Days</a></li>
-            <li><a href="#cost">Costs</a></li>
-            <li><a href="#visu">Visu</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
 
-    <!-- Home -->
-    <div class="container-fluid bg-1 text-center" id="home">
-      <div class="col-sm-4">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>AdultDataProject</title>
+  <meta charset="utf-8" />
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      font: 20px Montserrat, sans-serif;
+      line-height: 1.8;
+      color: #f5f6f7;
+    }
+
+    p {
+      font-size: 16px;
+    }
+
+    .margin {
+      margin-bottom: 45px;
+    }
+
+    .bg-1 {
+      background-color: #1abc9c;
+      /* Green */
+      color: #ffffff;
+    }
+
+    .bg-2 {
+      background-color: #474e5d;
+      /* Dark Blue */
+      color: #ffffff;
+    }
+
+    .bg-3 {
+      background-color: #ffffff;
+      /* White */
+      color: #555555;
+    }
+
+    .bg-4 {
+      background-color: #2f2f2f;
+      /* Black Gray */
+      color: #fff;
+    }
+
+    .container-fluid {
+      padding-top: 70px;
+      padding-bottom: 70px;
+    }
+
+    .navbar {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      border: 0;
+      border-radius: 0;
+      margin-bottom: 0;
+      font-size: 12px;
+      letter-spacing: 5px;
+    }
+
+    .navbar-nav li a:hover {
+      color: #1abc9c !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#home">AdultDataProject</a>
       </div>
-      <div class="col-sm-8">
-        <div id="home_graph"></div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#category">Category</a></li>
+          <li><a href="#views">Views</a></li>
+          <li><a href="#days">Days</a></li>
+          <li><a href="#cost">Costs</a></li>
+          <li><a href="#visu">Visu</a></li>
+        </ul>
       </div>
     </div>
+  </nav>
 
-    <div class="container-fluid bg-1 text-center" id="category">
-      <div class="col-sm-8">
-        <div id="category_graph"></div>
-      </div>
-      <div class="col-sm-4">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </div>
-    </div>
-
-    <div class="container-fluid bg-1 text-center" id="views">
-      <div class="col-sm-4">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </div>
-      <div class="col-sm-8">
-        <div id="views_graph"></div>
-      </div>
-    </div>
-
-    <div class="container-fluid bg-1 text-center" id="days">
-      <div class="col-sm-8">
-        <div id="days_graph"></div>
-      </div>
-      <div class="col-sm-4">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </div>
-    </div>
-
-    <div class="container-fluid bg-1 text-center" id="cost">
-      <div class="col-sm-4">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </div>
-      <div class="col-sm-8">
-        <div id="cost_graph"></div>
-      </div>
-    </div>
-
-    <div class="container-fluid bg-1 text-center" id="visu">
-      <div class="col-sm-8">
-        <div id="visu_graph"></div>
-      </div>
-      <div class="col-sm-4">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="container-fluid bg-4 text-center">
+  <!-- Home -->
+  <div class="container-fluid bg-1 text-center" id="home">
+    <div class="col-sm-4">
       <p>
-        AdultDataProject
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua.
       </p>
-    </footer>
-  </body>
+    </div>
+    <div class="col-sm-8">
+      <div id="home_graph"></div>
+    </div>
+  </div>
+
+  <div class="container-fluid bg-1 text-center" id="category">
+    <div class="col-sm-8">
+      <div id="category_graph"></div>
+    </div>
+    <div class="col-sm-4">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+    </div>
+  </div>
+
+  <div class="container-fluid bg-1 text-center" id="views">
+    <div class="col-sm-4">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+    </div>
+    <div class="col-sm-8">
+      <div id="views_graph"></div>
+    </div>
+  </div>
+
+  <div class="container-fluid bg-1 text-center" id="days">
+    <div class="col-sm-8">
+      <div id="days_graph"></div>
+    </div>
+    <div class="col-sm-4">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+    </div>
+  </div>
+
+  <div class="container-fluid bg-1 text-center" id="cost">
+    <div class="col-sm-4">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+    </div>
+    <div class="col-sm-8">
+      <div id="cost_graph">
+
+        <script>
+          var margin = {
+            top: 40,
+            right: 40,
+            bottom: 30,
+            left: 50
+          };
+          width = 900 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+          // append the svg object to the body of the page
+          var svg = d3.select("#cost")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+          d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/data.json", function (json) {
+
+            var data_raw = Array.from(Object.values(json))
+            var data = []
+
+
+            data_raw.map(function (d) {
+              if (d.duration != 'None')
+                data.push(d)
+            })
+
+
+            data.map(function (d) {
+              view = d3.max(d.evolution, function (t) {
+                return +t.views
+              })
+              d.view = view
+            })
+
+
+            var x = d3.scaleLinear()
+              .range([0, width])
+              .nice();
+
+            var y = d3.scaleLinear()
+              .range([height, 0]);
+
+            var xAxis = d3.axisBottom(x).ticks(12),
+              yAxis = d3.axisLeft(y).ticks(12 * height / width);
+
+            var brush = d3.brush().extent([
+              [0, 0],
+              [width, height]
+            ]).on("end", brushended),
+              idleTimeout,
+              idleDelay = 350;
+
+
+            var tooltip = d3.select("#cost")
+              .append("div")
+              .style("opacity", 0)
+              .attr("class", "tooltip")
+              .style("background-color", "white")
+              .style("border", "solid")
+              .style("border-width", "1px")
+              .style("border-radius", "5px")
+              .style("padding", "10px")
+
+            var mouseover = function (d) {
+              console.log(d)
+              console.log("Test")
+              tooltip
+
+                .style("opacity", 1)
+            }
+
+            var mousemove = function (d) {
+              console.log(d)
+              console.log("Test")
+              tooltip
+
+              /*
+              .style("left", (d3.mouse(this)[0] + 90) +
+                  "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+              .style("top", (d3.mouse(this)[1]) + "px")
+              */
+            }
+
+            var mouseleave = function (d) {
+              console.log(d)
+              console.log("Test")
+              tooltip
+                .transition()
+                .duration(200)
+                .style("opacity", 0)
+            }
+
+            var clip = svg.append("defs").append("svg:clipPath")
+              .attr("id", "clip")
+              .append("svg:rect")
+              .attr("width", width)
+              .attr("height", height)
+              .attr("x", 0)
+              .attr("y", 0);
+
+            var xExtent = d3.extent(data, function (d) {
+              return d.duration;
+            });
+
+            var yExtent = d3.extent(data, function (d) {
+              return d.view;
+            });
+
+            x.domain(d3.extent(data, function (d) {
+
+              return d.duration;
+            })).nice();
+            y.domain(d3.extent(data, function (d) {
+              return d.view;
+            })).nice();
+
+            var scatter = svg.append("g")
+              .attr("id", "scatterplot")
+              .attr("clip-path", "url(#clip)");
+
+            scatter.selectAll(".dot")
+              .data(data)
+              .enter().append("circle")
+              .attr("class", "dot")
+              .attr("r", 4)
+              .attr("cx", function (d) {
+                return x(d.duration);
+              })
+              .attr("cy", function (d) {
+                return y(d.view);
+              })
+              .attr("opacity", 0.5)
+              .style("fill", "#4292c6")
+              .style('pointer-events', 'none')
+              .on("mousemove", mousemove)
+              .on("mouseout", mouseleave)
+              .on("mouseover", mouseover);;
+
+
+            // x axis
+            svg.append("g")
+              .attr("class", "x axis")
+              .attr('id', "axis--x")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis);
+
+            svg.append("text")
+              .style("text-anchor", "end")
+              .attr("x", width)
+              .attr("y", height - 8)
+              .text("Durée");
+
+            // y axis
+            svg.append("g")
+              .attr("class", "y axis")
+              .attr('id', "axis--y")
+              .call(yAxis);
+
+            svg.append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", "1em")
+              .style("text-anchor", "end")
+              .text("Vues");
+
+            scatter.append("g")
+              .attr("class", "brush")
+              .call(brush);
+
+
+            function brushended() {
+
+              var s = d3.event.selection;
+              if (!s) {
+                if (!idleTimeout) return idleTimeout = setTimeout(idled, idleDelay);
+                x.domain(d3.extent(data, function (d) {
+                  return d.duration;
+                })).nice();
+                y.domain(d3.extent(data, function (d) {
+                  return d.view;
+                })).nice();
+              } else {
+                x.domain([s[0][0], s[1][0]].map(x.invert, x));
+                y.domain([s[1][1], s[0][1]].map(y.invert, y));
+                scatter.select(".brush").call(brush.move, null);
+              }
+              zoom();
+            }
+
+            function idled() {
+              idleTimeout = null;
+            }
+
+            function zoom() {
+
+              var t = scatter.transition().duration(750);
+              svg.select("#axis--x").transition(t).call(xAxis);
+              svg.select("#axis--y").transition(t).call(yAxis);
+              scatter.selectAll("circle").transition(t)
+                .attr("cx", function (d) {
+                  return x(d.duration);
+                })
+                .attr("cy", function (d) {
+                  return y(d.view);
+                });
+            }
+
+          });
+        </script>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid bg-1 text-center" id="visu">
+    <div class="col-sm-8">
+      <div id="visu_graph"></div>
+    </div>
+    <div class="col-sm-4">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="container-fluid bg-4 text-center">
+    <p>
+      AdultDataProject
+    </p>
+  </footer>
+</body>
+
 </html>
