@@ -2,7 +2,7 @@
 
 ## Contributeur
 
-Arnaud Bressot (11505990), Valentin Canete (11502374) et Adrien Guédet (11516525).
+Arnaud Bressot (11505990), Valentin Canete (11502374),Adrien Guédet (11516525), Mouhamed Loum(11514727).
 
 ## Description
 
