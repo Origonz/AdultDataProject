@@ -33,7 +33,8 @@ def nameToRef(data_dict):
             if not(c in cat):
                cat.append(c)
 
-    for c in cat:
+    while len(cat) > 0:
+        c = cat.pop()
         fin = True
         s = c.split(" ")
         nb = 0
@@ -44,7 +45,6 @@ def nameToRef(data_dict):
                 r = r + m[:nb]
             if not(r in ano) :
                 ano.append(r)
-                cat.remove(c)
                 dict_cat[c] = r
                 fin = False
     return dict_cat
