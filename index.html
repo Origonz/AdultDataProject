@@ -137,7 +137,7 @@
     </div>
   </nav>
   <div class="container-fluid bg-1 text-center" id="views">
-  
+
   </br>
   </br>
     <div class="col-sm-4">
@@ -364,7 +364,7 @@
     </div>
   </div>
   <div class="container-fluid bg-1 text-center" id="category">
-  
+
   </br>
   </br>
     <div class="col-sm-8">
@@ -386,7 +386,7 @@
 	  </div>
     </div>
     <div class="col-sm-4">
-    
+
     </br>
       </br>
       <p>
@@ -399,11 +399,11 @@
     </div>
   </div>
     <div class="container-fluid bg-1 text-center" id="days">
-    
+
   </br>
   </br>
       <div class="col-sm-4">
-      
+
       </br>
       </br>
         <p>
@@ -527,11 +527,11 @@
 			  </script>
 		</div>
       </div>
-      
+
     </div>
 
     <div class="container-fluid bg-1 text-center" id="cost">
-    
+
   </br>
   </br>
       <div class="col-sm-8">
@@ -779,7 +779,7 @@
                   .style("text-decoration", "underline")
                   .text("Nombre en vue en fonction du cout");
               }
-              
+
             );
 
 		  // ---------------------------------------------------------------------------------------------
@@ -982,7 +982,7 @@
         </div>
       </div>
       <div class="col-sm-4">
-      
+
       </br>
       </br>
         <p>
@@ -999,7 +999,7 @@
     </div>
 
     <div class="container-fluid bg-1 text-center" id="visu">
-    
+
   </br>
   </br>
       <div class="col-sm-8">
@@ -1007,17 +1007,17 @@
           <script>
 
              var canvas = d3.select("#visu_graph").append("svg")
-               .attr("width", 500)
-               .attr("height", 300)
+               .attr("width", 900)
+               .attr("height", 700)
                .append("g")
                  .attr("transform","translate(50,0)");
 
 
 
 
-             const widthD = 720//document.body.clientWidth;
-             const heightD =400// document.body.clientHeight;
-             const marginD = { top: 0, right: 90, bottom: 0, left: 40};
+             const widthD = 800//document.body.clientWidth;
+             const heightD =600// document.body.clientHeight;
+             const marginD = { top: 0, right: 70, bottom: 0, left: 40};
              const innerWidth = widthD - marginD.left - marginD.right;
              const innerHeight = heightD - marginD.top - marginD.bottom;
 
@@ -1027,7 +1027,7 @@
 
 
            var zoom = d3.behavior.zoom()
-               .scaleExtent([0.85, 10])
+               .scaleExtent([0.50, 10])
                .on('zoom', redraw);
 
              d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/dendogram.json",function(data){
@@ -1057,7 +1057,7 @@
                  .attr("fill","darkblue")
 
                node.append("text")
-                 .attr('dy', '0.32em')
+                 .attr('dy', '0.20em')
                  .attr('text-anchor', d =>d.children ? 'middle' : 'start')
                  .attr('font-size', d => 2.1 - d.depth + 'em')
                  .text(function(d){return "     "+d.id +" " + d.view ;})
@@ -1110,7 +1110,7 @@
         </div>
       </div>
       <div class="col-sm-4">
-      
+
       </br>
       </br>
         <p>
