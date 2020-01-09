@@ -120,110 +120,40 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#category">Category</a></li>
-            <li><a href="#views">Views</a></li>
-            <li><a href="#days">Days</a></li>
-            <li><a href="#cost">Costs</a></li>
-            <li><a href="#visu">Visu</a></li>
+            <li><a href="#views">Vues</a></li>
+            <li><a href="#category">Categories</a></li>
+            <li><a href="#days">Jours</a></li>
+            <li><a href="#cost">Cout</a></li>
+            <li><a href="#visu">Petinence</a></li>
           </ul>
         </div>
       </div>
     </nav>
-
     <!-- Home -->
     <div class="container-fluid bg-1 text-center" id="home">
-      <div class="col-sm-4">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </div>
-      <div class="col-sm-8">
-        <div id="home_graph"></div>
-      </div>
+      </br>
+      </br>
+      <h2>Ce site est notre projet de Data Viz sur le thème de la consomation de vidéos pour adulte.</h2>
     </div>
   </nav>
-
-  <!-- Home -->
-  <div class="container-fluid bg-1 text-center" id="home">
-    <div class="col-sm-4">
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </p>
-    </div>
-    <div class="col-sm-8">
-      <div id="home_graph"></div>
-    </div>
-  </div>
-
-  <div class="container-fluid bg-1 text-center" id="category">
-    <div class="col-sm-8">
-      <div id="category_graph">
-		<div id="select-section">
-			<select id="d3-debut" >
-			  <option value="first">choisissez la date de début</option>
-			</select>
-			<select id="d3-fin">
-			  <option value="last">choisissez la date de fin</option>
-			</select>
-			<br>
-			<label for="cats">Nombre de catégories (1-99):</label>
-
-			<input type="number" id="nb_cats" name="nombre"
-			   min="1" max="99" value="15">
-		</div>
-
-	  </div>
-    </div>
-    <div class="col-sm-4">
-      <p>
-        Ce graphe représente l'impact des différentes catégories dans la
-		consommation globale de vidéos. Il pourrait être intéressant de
-		voir si certaines catégories sont trop représentées par rapport à
-		leur demande, afin de réduire l'offre de ces catégories et donc
-		d'éviter du stockage de données inutiles.
-      </p>
-    </div>
-  </div>
-
   <div class="container-fluid bg-1 text-center" id="views">
+  
+  </br>
+  </br>
     <div class="col-sm-4">
+      </br>
+      </br>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </p>
-    </div>
-    <div class="col-sm-8">
-      <div id="views_graph"></div>
-    </div>
-  </div>
-
-    <div class="container-fluid bg-1 text-center" id="category">
-      <div class="col-sm-8">
-        <div id="category_graph"></div>
-      </div>
-      <div class="col-sm-4">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </div>
-    </div>
-
-    <div class="container-fluid bg-1 text-center" id="views">
-      <div class="col-sm-4">
-        <p>
-          Ce graphe présente l'évolution du nombre de vue en fonction de la
+        Ce graphe présente l'évolution du nombre de vue en fonction de la
           date. Ainsi, les jours de grandes influences sont visible pour
           déterminer les periodes qui génére un grand trafic. Il peut être
           interessant de proposer des solutions lors des periodes creuses afin
           de réduire la consomation d'énergie du site.
-        </p>
-      </div>
-      <div class="col-sm-8">
-        <div id="views_graph">
-          <script>
+      </p>
+    </div>
+    <div class="col-sm-8">
+      <div id="views_graph">
+        <script>
             // Set the dimensions of the canvas / graph
             var marginviews = { top: 70, right: 50, bottom: 30, left: 70 },
               widthviews = 600 - marginviews.left - marginviews.right,
@@ -430,12 +360,59 @@
                   .text("Evolution du nombre de vue par date");
               }
             );
-          </script>
-        </div>
-      </div>
+          </script></div>
     </div>
+  </div>
+  <div class="container-fluid bg-1 text-center" id="category">
+  
+  </br>
+  </br>
+    <div class="col-sm-8">
+      <div id="category_graph">
+		<div id="select-section">
+			<select id="d3-debut" >
+			  <option value="first">choisissez la date de début</option>
+			</select>
+			<select id="d3-fin">
+			  <option value="last">choisissez la date de fin</option>
+			</select>
+			<br>
+			<label for="cats">Nombre de catégories (1-99):</label>
 
+			<input type="number" id="nb_cats" name="nombre"
+			   min="1" max="99" value="15">
+		</div>
+
+	  </div>
+    </div>
+    <div class="col-sm-4">
+    
+    </br>
+      </br>
+      <p>
+        Ce graphe représente l'impact des différentes catégories dans la
+		consommation globale de vidéos. Il pourrait être intéressant de
+		voir si certaines catégories sont trop représentées par rapport à
+		leur demande, afin de réduire l'offre de ces catégories et donc
+		d'éviter du stockage de données inutiles.
+      </p>
+    </div>
+  </div>
     <div class="container-fluid bg-1 text-center" id="days">
+    
+  </br>
+  </br>
+      <div class="col-sm-4">
+      
+      </br>
+      </br>
+        <p>
+          Ce graphe représente la consommation en fonction des jours de la semaine.
+		  il permet de voir que la fréquentation est beaucoup plus forte en fin de
+		   semaine qu'en milieu. Il serait donc peut ëtre judicieux de diminuer les
+		   ressources allouées pendant la semaine
+        </p>
+      </div>
       <div class="col-sm-8">
         <div id="days_graph">
 			<script>
@@ -450,10 +427,11 @@
 
 				svg_days.append("text")
 				  .text("Consommation de vidéos adultes en fonction des jours")
-				  .attr("y", height * 0.05)
-				  .attr("x", width * 0.2)
-				  .attr("font-size", width * 0.02)
-				  .attr("font-family", "monospace")
+				  .attr("x", width / 2)
+                  .attr("y", 35 - 40 / 2)
+                  .attr("text-anchor", "middle")
+                  .style("font-size", "16px")
+                  .style("text-decoration", "underline")
 
 				var days;
 
@@ -549,29 +527,13 @@
 			  </script>
 		</div>
       </div>
-      <div class="col-sm-4">
-        <p>
-          Ce graphe représente la consommation en fonction des jours de la semaine.
-		  il permet de voir que la fréquentation est beaucoup plus forte en fin de
-		   semaine qu'en milieu. Il serait donc peut ëtre judicieux de diminuer les
-		   ressources allouées pendant la semaine
-        </p>
-      </div>
+      
     </div>
 
     <div class="container-fluid bg-1 text-center" id="cost">
-      <div class="col-sm-4">
-        <p>
-          Ce graphe présente les vidéos collectées par rapport à leurs durées en
-          secondes et leurs nombres de vues. Ainsi, les vidéos les plus longues
-          représentent un enjeu en terme de stockage dans les datacenters et les
-          vidéos les plus vues un enjeu en trafic. On peut voir que la majorité
-          des vidéos qui sont stockées dans les datacenters sont très peu vues,
-          il serait intéressant de procéder à un "nettoyage" quand une vidéo est
-          assez longue et ne rencontre pas une certaine popularité, en vu de
-          réduire les consommations énergétiques.
-        </p>
-      </div>
+    
+  </br>
+  </br>
       <div class="col-sm-8">
         <div id="cost_graph">
           <script>
@@ -808,7 +770,16 @@
                       return y(d.view);
                     });
                 }
+                svg
+                  .append("text")
+                  .attr("x", width / 2)
+                  .attr("y", 15 - margin.top / 2)
+                  .attr("text-anchor", "middle")
+                  .style("font-size", "16px")
+                  .style("text-decoration", "underline")
+                  .text("Nombre en vue en fonction du cout");
               }
+              
             );
 
 		  // ---------------------------------------------------------------------------------------------
@@ -831,11 +802,12 @@
 
 
 			svg.append("text")
+                  .attr("x", width / 2)
+                  .attr("y", 35 - margin.top / 2)
+                  .attr("text-anchor", "middle")
+                  .style("font-size", "16px")
+                  .style("text-decoration", "underline")
 			.text("Parts des catégories les plus populaires dans la consommation globale")
-			.attr("y", height * 0.05)
-			.attr("x", width * 0.1)
-			.attr("font-size", width * 0.02)
-			.attr("font-family", "monospace")
 
 			var data2 = dates.map(
 			  function(key) {
@@ -1009,16 +981,34 @@
         </script>
         </div>
       </div>
+      <div class="col-sm-4">
+      
+      </br>
+      </br>
+        <p>
+          Ce graphe présente les vidéos collectées par rapport à leurs durées en
+          secondes et leurs nombres de vues. Ainsi, les vidéos les plus longues
+          représentent un enjeu en terme de stockage dans les datacenters et les
+          vidéos les plus vues un enjeu en trafic. On peut voir que la majorité
+          des vidéos qui sont stockées dans les datacenters sont très peu vues,
+          il serait intéressant de procéder à un "nettoyage" quand une vidéo est
+          assez longue et ne rencontre pas une certaine popularité, en vu de
+          réduire les consommations énergétiques.
+        </p>
+      </div>
     </div>
 
     <div class="container-fluid bg-1 text-center" id="visu">
+    
+  </br>
+  </br>
       <div class="col-sm-8">
         <div id="visu_graph">
           <script>
 
-             var canvas = d3.select("body").append("svg")
-               .attr("width", 1100)
-               .attr("height", 1100)
+             var canvas = d3.select("#visu_graph").append("svg")
+               .attr("width", 500)
+               .attr("height", 300)
                .append("g")
                  .attr("transform","translate(50,0)");
 
@@ -1120,6 +1110,9 @@
         </div>
       </div>
       <div class="col-sm-4">
+      
+      </br>
+      </br>
         <p>
           Ce dendogramme permet de visualiser le nombre de vues par ordre décroissant
           selon les catégories,les titres et les tags.
@@ -1133,7 +1126,7 @@
     <!-- Footer -->
     <footer class="container-fluid bg-4 text-center">
       <p>
-        AdultDataProject
+        AdultDataProject - Pour plus d'info : <a style="color:cornsilk;" href="https://github.com/Origonz/AdultDataProject/wiki">Wiki</a>
       </p>
     </footer>
   </body>
