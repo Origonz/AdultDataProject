@@ -4,6 +4,8 @@
     <!-- Theme Made By www.w3schools.com - No Copyright -->
     <title>AdultDataProject</title>
     <meta charset="utf-8" />
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.12.2/d3.min.js">
     <script src="https://d3js.org/d3.v4.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
@@ -73,6 +75,29 @@
       .navbar-nav li a:hover {
         color: #1abc9c !important;
       }
+      path {
+        fill: none;
+        stroke: #56c2a3;
+      }
+
+      text {
+        text-shadow:
+        -1px -1px 3px white,
+        -1px  1px 3px white,
+        1px -1px 3px white,
+        1px  1px 3px white;
+        pointer-events: none;
+        font-family: 'Playfair Display', serif;
+      }
+      .node {
+			     fill: black;
+			     stroke-width: 6;
+  		     cursor:pointer;
+		   }
+    .circle{
+      opacity:1;
+      fill:darkblue;
+    }
     </style>
   </head>
 
@@ -148,15 +173,15 @@
 			<input type="number" id="nb_cats" name="nombre"
 			   min="1" max="99" value="15">
 		</div>
-	  
+
 	  </div>
     </div>
     <div class="col-sm-4">
       <p>
-        Ce graphe représente l'impact des différentes catégories dans la 
+        Ce graphe représente l'impact des différentes catégories dans la
 		consommation globale de vidéos. Il pourrait être intéressant de
 		voir si certaines catégories sont trop représentées par rapport à
-		leur demande, afin de réduire l'offre de ces catégories et donc 
+		leur demande, afin de réduire l'offre de ces catégories et donc
 		d'éviter du stockage de données inutiles.
       </p>
     </div>
@@ -418,27 +443,27 @@
 				var height = 300;
 				var marginWidth = width * 0.2;
 				var marginHeight = height * 0.2;
-				
+
 				var svg_days = d3.select("#days_graph").append("svg")
 				  .attr("width", width)
 				  .attr("height", height)
-				
+
 				svg_days.append("text")
 				  .text("Consommation de vidéos adultes en fonction des jours")
 				  .attr("y", height * 0.05)
 				  .attr("x", width * 0.2)
 				  .attr("font-size", width * 0.02)
 				  .attr("font-family", "monospace")
-				
+
 				var days;
-				
-				
+
+
 				d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/days.json", function(data){
-				  
+
 				  days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-				  
-				  
-				  var dataParsed = days.map( 
+
+
+				  var dataParsed = days.map(
 					function(key) {
 					  var dict = {};
 					  dict["day"] = key
@@ -447,50 +472,50 @@
 					}
 				  )
 				  //console.log(dataParsed)
-				  
-				  
+
+
 				  var total = 0;
 				  dataParsed.map(function(d){
 					total += d.value
 				  })
-				  
-				  
-				  
+
+
+
 				  maxima = 0
-				  
+
 						dataParsed.forEach(function(d){
 					if (d["value"] > maxima){
 					  maxima = d["value"]
 					}
 					})
-					
+
 					//console.log(maxima)
-				  
-				  
+
+
 				  var height_ = d3.scaleLinear()
 				  .domain([0,maxima])
 				  .range([0 , height - marginHeight]);
-				  
+
 				  var x = d3.scaleLinear()
 				  .domain([0,days.length])
 				  .range([marginWidth, width * 0.95 ]);
-				  
+
 				  var yperCent = d3.scaleLinear()
 				  .domain([0,Math.floor(1 + maxima/total * 100)])
 				  .range([height - marginHeight / 2 , marginHeight / 2]);
-				   
-				  
+
+
 				  svg_days.selectAll("rect").data(dataParsed).enter()
 						  .append("rect")
-						  .attr("height", function(d) { 
-					  return height_(d.value); 
+						  .attr("height", function(d) {
+					  return height_(d.value);
 					}).attr("width", (width - marginWidth) * 0.90 / (days.length + 1))
-						  .attr("y", function(d) { 
+						  .attr("y", function(d) {
 					return  height - marginHeight/2 - height_(d.value); })
 						  .attr("x",  function(d,i) { return x(i); })
 						  .style("fill", function(d){ return "red"})
-				  
-				  
+
+
 				  svg_days.selectAll("text25").data(dataParsed).enter()
 				  .append("text")
 				  .text(function(d){ return d.day })
@@ -498,13 +523,13 @@
 				  .attr("y", height - marginHeight / 4)
 				  .attr("font-size", 12)
 				  .attr("font-family", "monospace");
-				  
-				  
+
+
 				  var tab = []
 					for(let i = 0; i < 1 + maxima/total * 100; i++){
 					tab.push(i)
 				  }
-				  
+
 				  svg_days.selectAll("text54").data(tab).enter()
 				  .append("text")
 				  .text(function(d){
@@ -516,19 +541,19 @@
 				  .attr("x", margin/2)
 				  .attr("font-size", 12)
 				  .attr("font-family", "monospace");
-				  
+
 				});
-				  
-				
-				
-			  </script>	
+
+
+
+			  </script>
 		</div>
       </div>
       <div class="col-sm-4">
         <p>
           Ce graphe représente la consommation en fonction des jours de la semaine.
 		  il permet de voir que la fréquentation est beaucoup plus forte en fin de
-		   semaine qu'en milieu. Il serait donc peut ëtre judicieux de diminuer les 
+		   semaine qu'en milieu. Il serait donc peut ëtre judicieux de diminuer les
 		   ressources allouées pendant la semaine
         </p>
       </div>
@@ -659,7 +684,7 @@
                 var xExtent = d3.extent(data, function(d) {
                   return d.duration;
                 });
-				
+
 				var yExtent = d3.extent(data, function(d) {
                   return d.view;
                 });
@@ -785,20 +810,20 @@
                 }
               }
             );
-		  
+
 		  // ---------------------------------------------------------------------------------------------
 		  // SCRIPT CATEGORIES
 		  var display_cats = function(begin,finish,nb_display){
 			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
-			
+
 			d3.select("#svg_cats").remove();
 			var diff  = [];
 			var cats = [];
-			
+
 			dates = Object.keys(data)
 			Object.keys(data[dates[0]]).forEach( cat => cats.push(cat))
 
-			
+
 			var svg = d3.select("#category_graph").append("svg")
 			.attr("width", width)
 			.attr("height", height)
@@ -812,7 +837,7 @@
 			.attr("font-size", width * 0.02)
 			.attr("font-family", "monospace")
 
-			var data2 = dates.map( 
+			var data2 = dates.map(
 			  function(key) {
 				var dict = {};
 				dict["date"] = key
@@ -824,8 +849,8 @@
 				return dict;
 			  }
 			)
-			
-					
+
+
 			var total = 0;
 			if(begin == false || finish == false || begin == "first" || finish == "last"){
 			  diff = cats.map(function(cat){
@@ -842,7 +867,7 @@
 				return dict;
 			  })
 			}
-        
+
 			var best = [];
 			var minVal = 1000000000;
 			for(let i = 0; i < cats.length; i++){
@@ -898,7 +923,7 @@
 			var width_ = d3.scaleLinear()
 			.domain([0,maxima])
 			.range([width - 150 , 0.05 * width]);
-					
+
 			var y = d3.scaleLinear()
 			.domain([0,parseInt(nb_display) + 1])
 			.range([height * 0.1, height]);
@@ -907,11 +932,11 @@
 			.domain([0,Math.floor(1 + to_display[0].value/total * 100)])
 			.range([150 , width - 20]);
 
-			
+
 			svg.selectAll("rect").data(to_display).enter()
 					.append("rect")
-					.attr("width", function(d) { 
-				return width - (150 + width_(d["value"])); 
+					.attr("width", function(d) {
+				return width - (150 + width_(d["value"]));
 			  }).attr("height", (height * 0.8) / (parseInt(nb_display) + 1))
 					.attr("x", function(d) { return  150; })
 					.attr("y",  function(d,i) { return y(i); })
@@ -922,7 +947,7 @@
 			  svg.selectAll("text25").data(to_display).enter()
 			  .append("text")
 			  .text(function(d){
-				return dataAno[d.id] 
+				return dataAno[d.id]
 			  })
 			  .attr("y", function(d,i){return y(i) + ((height * 0.8) / (nb_display + 1))/2})
 			  .attr("x", 10)
@@ -948,38 +973,38 @@
 
 		    });
 		  }
-		  
+
 		  d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
-      
+
 			  keys = Object.keys(data)
 			  keys.forEach( function(key){
-				
+
 				var node1 = document.createElement("option");
 				var node2 = document.createElement("option");
-				
-				var textnode1 = document.createTextNode(key);         
-				var textnode2 = document.createTextNode(key);         
+
+				var textnode1 = document.createTextNode(key);
+				var textnode2 = document.createTextNode(key);
 				// Create a text node
 						node1.appendChild(textnode1);
 				node2.appendChild(textnode2);
-				
+
 						document.getElementById("d3-debut").appendChild(node1)
-				
+
 				document.getElementById("d3-fin").appendChild(node2)
 			  })
-      
+
 		  })
-		  
+
 		  d3.select("#select-section").on("change", function(d) {
 			  var begin = d3.select("#d3-debut").node().value;
 			  var finish = d3.select("#d3-fin").node().value;
 			  var nb_cats = d3.select("#nb_cats").node().value;
-			  
+
 			  display_cats(begin,finish,nb_cats)
 		  })
-			
+
 		  display_cats(false,false,d3.select("#nb_cats").node().value)
-		  
+
 		  //------------------------------- FIN CATEGORIES --------------------------------------------------
         </script>
         </div>
@@ -988,12 +1013,119 @@
 
     <div class="container-fluid bg-1 text-center" id="visu">
       <div class="col-sm-8">
-        <div id="visu_graph"></div>
+        <div id="visu_graph">
+          <script>
+
+             var canvas = d3.select("body").append("svg")
+               .attr("width", 1100)
+               .attr("height", 1100)
+               .append("g")
+                 .attr("transform","translate(50,0)");
+
+
+
+
+             const widthD = 720//document.body.clientWidth;
+             const heightD =400// document.body.clientHeight;
+             const marginD = { top: 0, right: 90, bottom: 0, left: 40};
+             const innerWidth = widthD - marginD.left - marginD.right;
+             const innerHeight = heightD - marginD.top - marginD.bottom;
+
+             var tree=d3.layout.tree()
+               .size([innerHeight, innerWidth])
+               .separation(function(a, b) { return a.parent === b.parent ? 10 : 15; });
+
+
+           var zoom = d3.behavior.zoom()
+               .scaleExtent([0.85, 10])
+               .on('zoom', redraw);
+
+             d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/dendogram.json",function(data){
+               console.log(data)
+               var nodes=tree.nodes(data);
+               //console.log(nodes)
+               var links=tree.links(nodes);
+               //console.log(links);
+               var node=canvas.selectAll(".node")
+                 .data(nodes)
+                 .enter()
+                 .append("g")
+                   .attr("class","node")
+                   .attr("transform",function(d){return "translate(" + d.y + "," + d.x+")";})
+                 .on("mouseover", function(d, i) {
+                 d3.select(this).style("fill", "red");
+                   fade(d.id, 0.2);
+               })
+               .on("mouseout", function(d, i) {
+                 d3.select(this).style("fill", "black");
+                 fadeOut()
+               })
+               .call(zoom)
+
+               node.append("circle")
+                 .attr("r",1.5)
+                 .attr("fill","darkblue")
+
+               node.append("text")
+                 .attr('dy', '0.32em')
+                 .attr('text-anchor', d =>d.children ? 'middle' : 'start')
+                 .attr('font-size', d => 2.1 - d.depth + 'em')
+                 .text(function(d){return "     "+d.id +" " + d.view ;})
+
+
+               var diagonal=d3.svg.diagonal()
+                 .projection(function(d){return [d.y,d.x]; })
+
+               canvas.selectAll(".links")
+                 .data(links)
+                 .enter()
+                 .append("path")
+                 .attr("class","link")
+                 .attr("fill","none")
+                 .attr("stroke","#ADADAD")
+                 .attr("d",diagonal)
+                 .call(zoom);
+
+               var opacity = d3.scale.sqrt()
+                    .domain([d3.min(data, function (d) { return d.depth; }),d3.max(data, function (d) { return d.depth; })])
+                    .range([1, .5]);
+
+             })
+
+             function redraw() {
+             canvas.attr('transform', 'translate(' + d3.event.translate + ')' +
+                 ' scale(' + d3.event.scale + ')');
+             }
+
+
+
+             function fade(c, opacity) {
+                 canvas.selectAll("circle")
+                    .filter(function (d) {
+                    return d.id != c;
+                    })
+                    .transition()
+                    .style("opacity", opacity);
+
+             }
+
+             function fadeOut() {
+                   canvas.selectAll("circle")
+                      .transition()
+                      .style("opacity", 1);
+             }
+
+           </script>
+
+        </div>
       </div>
       <div class="col-sm-4">
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Ce dendogramme permet de visualiser le nombre de vues par ordre décroissant
+          selon les catégories,les titres et les tags.
+          Il permet aux vidéastes d'identifier les catégories qui font le plus de vues de même
+          que les tags et les mots clés dans les titres de vidéos ainsi cela permet
+          d'éviter le stockage des vidéos inutilement et de consommer de l'énergie.
         </p>
       </div>
     </div>
