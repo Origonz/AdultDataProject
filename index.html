@@ -144,16 +144,16 @@
     <p>
       Ces graphes s'adressent principalement aux personnes qui souhaite uplaoder des vidéos mais aussi aux distributeurs.
       Ils sont aussi adaptés pour le grand public afin d'avoir une vue sur les tendances du site.
-      Sachant qu'environs <b>10%</b> sont supprimé par la suite, autant réfléchir en amont et éviter une consomation de ressources inutiles.
+      Sachant qu'environ <b>10%</b> des vidéos sont supprimées par la suite, autant réfléchir en amont et éviter une consomation de ressources inutiles.
     </p>
   </div>
   <div class="col-sm-6">
   <h2>Pourquoi ?</h2>
   <p>
-      Les vidéos pour adulte représente plus de <b>30%</b> d'internet et cela represente un cout énorme en stockage et en transfère. 
-      Ainsi, si les 350 millions de visites mensuelles de Xvideos consomment à chaque fois près de 100 megabytes cela correspond à 30 petabytes 
-      de données transférées chaque mois via les réseaux de télécommunications. Ce qui fait une consomation énergétique énorme. 
-      Et il est important de donner aux sites mais aussi aux auteurs des indices quand à la pertinence des vidéos afin de réduire son cout énérgétique.
+      Les vidéos pour adulte représentent plus de <b>30%</b> d'internet et represente un coût énorme en stockage et en transfert.
+      Ainsi, si les 350 millions de visites mensuelles de Xvideos consomment à chaque fois près de 100 megabytes, cela correspond à 30 petabytes
+      de données transférées chaque mois via les réseaux de télécommunications. Ce qui fait une consomation énergétique énorme.
+      Et il est important de donner aux sites mais aussi aux auteurs des indices quant à la pertinence des vidéos afin de réduire son coût énérgétique.
     </p>
   </div>
     </div>
@@ -386,6 +386,137 @@
           </script></div>
     </div>
   </div>
+  <div class="container-fluid bg-1 text-center" id="days">
+
+</br>
+</br>
+    <div class="col-sm-4">
+
+    </br>
+    </br>
+      <p>
+        Ce graphe représente la consommation en fonction des jours de la semaine.
+    il permet de voir que la fréquentation est beaucoup plus forte en fin de
+     semaine qu'en milieu. Il serait donc peut ëtre judicieux de diminuer les
+     ressources allouées pendant la semaine
+      </p>
+    </div>
+    <div class="col-sm-8">
+      <div id="days_graph">
+    <script>
+      var width = 700;
+      var height = 500;
+      var marginWidth = width * 0.2;
+      var marginHeight = height * 0.2;
+
+      var svg_days = d3.select("#days_graph").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+
+      svg_days.append("text")
+        .text("Consommation de vidéos adultes en fonction des jours")
+        .attr("x", width / 2)
+                .attr("y", 35 - 40 / 2)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("text-decoration", "underline")
+
+      var days;
+
+
+      d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/days.json", function(data){
+
+        days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+
+        var dataParsed = days.map(
+        function(key) {
+          var dict = {};
+          dict["day"] = key
+          dict["value"] = parseInt(data[key])
+          return dict;
+        }
+        )
+        //console.log(dataParsed)
+
+
+        var total = 0;
+        dataParsed.map(function(d){
+        total += d.value
+        })
+
+
+
+        maxima = 0
+
+          dataParsed.forEach(function(d){
+        if (d["value"] > maxima){
+          maxima = d["value"]
+        }
+        })
+
+        //console.log(maxima)
+
+
+        var height_ = d3.scaleLinear()
+        .domain([0,maxima])
+        .range([0 , height - marginHeight]);
+
+        var x = d3.scaleLinear()
+        .domain([0,days.length])
+        .range([marginWidth, width * 0.95 ]);
+
+        var yperCent = d3.scaleLinear()
+        .domain([0,Math.floor(1 + maxima/total * 100)])
+        .range([height - marginHeight / 2 , marginHeight / 2]);
+
+
+        svg_days.selectAll("rect").data(dataParsed).enter()
+            .append("rect")
+            .attr("height", function(d) {
+          return height_(d.value);
+        }).attr("width", (width - marginWidth) * 0.90 / (days.length + 1))
+            .attr("y", function(d) {
+        return  height - marginHeight/2 - height_(d.value); })
+            .attr("x",  function(d,i) { return x(i); })
+            .style("fill", function(d){ return "steelblue"})
+
+
+        svg_days.selectAll("text25").data(dataParsed).enter()
+        .append("text")
+        .text(function(d){ return d.day })
+        .attr("x", function(d,i){return x(i) + ((width - marginWidth) / (days.length +1))/2})
+        .attr("y", height - marginHeight / 4)
+        .attr("font-size", 12)
+        .attr("font-family", "monospace");
+
+
+        var tab = []
+        for(let i = 0; i < 1 + maxima/total * 100; i++){
+        tab.push(i)
+        }
+
+        svg_days.selectAll("text54").data(tab).enter()
+        .append("text")
+        .text(function(d){
+        return d + "%"
+        })
+        .attr("y", function(d,i){
+        return yperCent(d);
+        })
+        .attr("x", margin/2)
+        .attr("font-size", 12)
+        .attr("font-family", "monospace");
+
+      });
+
+
+
+      </script>
+  </div>
+    </div>
+
+  </div>
   <div class="container-fluid bg-1 text-center" id="category">
 
   </br>
@@ -421,137 +552,7 @@
       </p>
     </div>
   </div>
-    <div class="container-fluid bg-1 text-center" id="days">
-
-  </br>
-  </br>
-      <div class="col-sm-4">
-
-      </br>
-      </br>
-        <p>
-          Ce graphe représente la consommation en fonction des jours de la semaine.
-		  il permet de voir que la fréquentation est beaucoup plus forte en fin de
-		   semaine qu'en milieu. Il serait donc peut ëtre judicieux de diminuer les
-		   ressources allouées pendant la semaine
-        </p>
-      </div>
-      <div class="col-sm-8">
-        <div id="days_graph">
-			<script>
-				var width = 700;
-				var height = 500;
-				var marginWidth = width * 0.2;
-				var marginHeight = height * 0.2;
-
-				var svg_days = d3.select("#days_graph").append("svg")
-				  .attr("width", width)
-				  .attr("height", height)
-
-				svg_days.append("text")
-				  .text("Consommation de vidéos adultes en fonction des jours")
-				  .attr("x", width / 2)
-                  .attr("y", 35 - 40 / 2)
-                  .attr("text-anchor", "middle")
-                  .style("font-size", "16px")
-                  .style("text-decoration", "underline")
-
-				var days;
-
-
-				d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/days.json", function(data){
-
-				  days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-
-
-				  var dataParsed = days.map(
-					function(key) {
-					  var dict = {};
-					  dict["day"] = key
-					  dict["value"] = parseInt(data[key])
-					  return dict;
-					}
-				  )
-				  //console.log(dataParsed)
-
-
-				  var total = 0;
-				  dataParsed.map(function(d){
-					total += d.value
-				  })
-
-
-
-				  maxima = 0
-
-						dataParsed.forEach(function(d){
-					if (d["value"] > maxima){
-					  maxima = d["value"]
-					}
-					})
-
-					//console.log(maxima)
-
-
-				  var height_ = d3.scaleLinear()
-				  .domain([0,maxima])
-				  .range([0 , height - marginHeight]);
-
-				  var x = d3.scaleLinear()
-				  .domain([0,days.length])
-				  .range([marginWidth, width * 0.95 ]);
-
-				  var yperCent = d3.scaleLinear()
-				  .domain([0,Math.floor(1 + maxima/total * 100)])
-				  .range([height - marginHeight / 2 , marginHeight / 2]);
-
-
-				  svg_days.selectAll("rect").data(dataParsed).enter()
-						  .append("rect")
-						  .attr("height", function(d) {
-					  return height_(d.value);
-					}).attr("width", (width - marginWidth) * 0.90 / (days.length + 1))
-						  .attr("y", function(d) {
-					return  height - marginHeight/2 - height_(d.value); })
-						  .attr("x",  function(d,i) { return x(i); })
-						  .style("fill", function(d){ return "steelblue"})
-
-
-				  svg_days.selectAll("text25").data(dataParsed).enter()
-				  .append("text")
-				  .text(function(d){ return d.day })
-				  .attr("x", function(d,i){return x(i) + ((width - marginWidth) / (days.length +1))/2})
-				  .attr("y", height - marginHeight / 4)
-				  .attr("font-size", 12)
-				  .attr("font-family", "monospace");
-
-
-				  var tab = []
-					for(let i = 0; i < 1 + maxima/total * 100; i++){
-					tab.push(i)
-				  }
-
-				  svg_days.selectAll("text54").data(tab).enter()
-				  .append("text")
-				  .text(function(d){
-					return d + "%"
-				  })
-				  .attr("y", function(d,i){
-					return yperCent(d);
-				  })
-				  .attr("x", margin/2)
-				  .attr("font-size", 12)
-				  .attr("font-family", "monospace");
-
-				});
-
-
-
-			  </script>
-		</div>
-      </div>
-
-    </div>
+    
 
     <div class="container-fluid bg-1 text-center" id="cost">
 
@@ -1057,7 +1058,7 @@
                .on('zoom', redraw);
 
              d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/dendogram.json",function(data){
-               console.log(data)
+               //console.log(data)
                var nodes=tree.nodes(data);
                //console.log(nodes)
                var links=tree.links(nodes);
@@ -1155,5 +1156,66 @@
         AdultDataProject - Pour plus d'info : <a style="color:cornsilk;" href="https://github.com/Origonz/AdultDataProject/wiki">Wiki</a>
       </p>
     </footer>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+
+<!-- Modal content -->
+<div class="modal-content text-center">
+  <span class="close">&times;</span>
+  <p>Vous utilisez un autre navigateur que Firefox, il est possible qu'il y ai des fonctionalités non disponibles ou erronées.</p>
+</div>
+
+</div>
+    <style>
+      /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+} 
+    </style>
+    <script>
+      modal = document.getElementById("myModal")
+      if(typeof InstallTrigger == 'undefined'){
+        modal.style.display = "block";
+      }
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+    </script>
   </body>
 </html>
