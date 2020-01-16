@@ -532,6 +532,205 @@
 			<input type="number" id="nb_cats" name="nombre"
 			   min="1" max="99" value="15">
 		</div>
+		
+		<script>
+			// ---------------------------------------------------------------------------------------------
+		  // SCRIPT CATEGORIES
+		  var display_cats = function(begin,finish,nb_display){
+			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
+
+			d3.select("#svg_cats").remove();
+			var diff  = [];
+			var cats = [];
+
+			dates = Object.keys(data)
+			Object.keys(data[dates[0]]).forEach( cat => cats.push(cat))
+
+
+			var svg = d3.select("#category_graph").append("svg")
+			.attr("width", width)
+			.attr("height", height)
+			.attr("id", "svg_cats")
+
+
+			svg.append("text")
+                  .attr("x", width / 2)
+                  .attr("y", 35 - margin.top / 2)
+                  .attr("text-anchor", "middle")
+                  .style("font-size", "16px")
+                  .style("text-decoration", "underline")
+			.text("Parts des catégories les plus populaires dans la consommation globale")
+
+			var data2 = dates.map(
+			  function(key) {
+				var dict = {};
+				dict["date"] = key
+				Object.keys(data[key]).forEach(
+				  function(key2) {
+					dict[key2] = data[key][key2]
+				  }
+				)
+				return dict;
+			  }
+			)
+
+
+			var total = 0;
+			if(begin == false || finish == false || begin == "first" || finish == "last"){
+			  diff = cats.map(function(cat){
+				var dict = { id: cat,
+				  value : data2[data2.length - 1][cat] - data2[0][cat]}
+				total += dict.value
+				return dict;
+			  })
+					} else {
+			  diff = cats.map(function(cat){
+				var dict = { id: cat,
+				  value : data[finish][cat] - data[begin][cat]}
+				total += dict.value
+				return dict;
+			  })
+			}
+
+			var best = [];
+			var minVal = 1000000000;
+			for(let i = 0; i < cats.length; i++){
+			  if (best.length < nb_display){
+				best.push(i)
+
+				if (diff[i]["value"] < minVal){
+				  minVal = diff[i]["value"]
+				}
+			  } else {
+				if (diff[i]["value"] > minVal){
+				  for(let j = 0; j < nb_display; j++){
+					if (diff[best[j]].value == minVal){
+					  best[j] = i
+					  break;
+					}
+				  }
+				  minVal = Number.MAX_VALUE;
+				  for(let j = 0; j < nb_display; j++){
+					if (diff[best[j]]["value"] < minVal){
+					  minVal = diff[best[j]]["value"]
+					}
+				  }
+				}
+			  }
+			}
+
+
+			var to_display = diff.filter(function(d,i){
+			  for(let j = 0; j < cats.length; j++){
+				if (i == best[j]){
+				  return true;
+				}
+			  }
+			  return false;
+			});
+
+			maxima = 0
+
+			to_display.forEach(function(d){
+			  if (d["value"] > maxima){
+				maxima = d["value"]
+			  }
+			})
+
+			function keysrt(key,desc) {
+			  return function(a,b){
+			   return desc ? ~~(a[key] > b[key]) : ~~(a[key] < b[key]);
+			  }
+			}
+			to_display.sort(keysrt("value"))
+
+			var width_ = d3.scaleLinear()
+			.domain([0,maxima])
+			.range([width - 150 , 0.05 * width]);
+
+			var y = d3.scaleLinear()
+			.domain([0,parseInt(nb_display) + 1])
+			.range([height * 0.1, height]);
+
+			var xperCent = d3.scaleLinear()
+			.domain([0,Math.floor(1 + to_display[0].value/total * 100)])
+			.range([150 , width - 20]);
+
+
+			svg.selectAll("rect").data(to_display).enter()
+					.append("rect")
+					.attr("width", function(d) {
+				return width - (150 + width_(d["value"]));
+			  }).attr("height", (height * 0.8) / (parseInt(nb_display) + 1))
+					.attr("x", function(d) { return  150; })
+					.attr("y",  function(d,i) { return y(i); })
+					.style("fill", function(d){ return "steelBlue"})
+
+			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/cat_userfriendly.json", function(dataAno){
+
+			  svg.selectAll("text25").data(to_display).enter()
+			  .append("text")
+			  .text(function(d){
+				return dataAno[d.id]
+			  })
+			  .attr("y", function(d,i){return y(i) + ((height * 0.8) / (nb_display + 1))/2})
+			  .attr("x", 10)
+			  .attr("font-size", 12)
+			  .attr("font-family", "monospace");
+
+			})
+
+			var tab = []
+			for(let i = 0; i < 1 + to_display[0].value/total * 100; i++){
+			  tab.push(i)
+			}
+
+			svg.selectAll("text2").data(tab).enter()
+			.append("text")
+			.text(function(d){
+			  return d + "%"
+			})
+			.attr("y", height *0.99)
+			.attr("x", function(d){return xperCent(d)})
+			.attr("font-size", 12)
+			.attr("font-family", "monospace");
+
+		    });
+		  }
+
+		  d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
+
+			  keys = Object.keys(data)
+			  keys.forEach( function(key){
+
+				var node1 = document.createElement("option");
+				var node2 = document.createElement("option");
+
+				var textnode1 = document.createTextNode(key);
+				var textnode2 = document.createTextNode(key);
+				// Create a text node
+						node1.appendChild(textnode1);
+				node2.appendChild(textnode2);
+
+						document.getElementById("d3-debut").appendChild(node1)
+
+				document.getElementById("d3-fin").appendChild(node2)
+			  })
+
+		  })
+
+		  d3.select("#select-section").on("change", function(d) {
+			  var begin = d3.select("#d3-debut").node().value;
+			  var finish = d3.select("#d3-fin").node().value;
+			  var nb_cats = d3.select("#nb_cats").node().value;
+
+			  display_cats(begin,finish,nb_cats)
+		  })
+
+		  display_cats(false,false,d3.select("#nb_cats").node().value)
+
+		  //------------------------------- FIN CATEGORIES --------------------------------------------------
+		</script>
 
 	  </div>
     </div>
@@ -802,202 +1001,7 @@
 
             );
 
-		  // ---------------------------------------------------------------------------------------------
-		  // SCRIPT CATEGORIES
-		  var display_cats = function(begin,finish,nb_display){
-			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
-
-			d3.select("#svg_cats").remove();
-			var diff  = [];
-			var cats = [];
-
-			dates = Object.keys(data)
-			Object.keys(data[dates[0]]).forEach( cat => cats.push(cat))
-
-
-			var svg = d3.select("#category_graph").append("svg")
-			.attr("width", width)
-			.attr("height", height)
-			.attr("id", "svg_cats")
-
-
-			svg.append("text")
-                  .attr("x", width / 2)
-                  .attr("y", 35 - margin.top / 2)
-                  .attr("text-anchor", "middle")
-                  .style("font-size", "16px")
-                  .style("text-decoration", "underline")
-			.text("Parts des catégories les plus populaires dans la consommation globale")
-
-			var data2 = dates.map(
-			  function(key) {
-				var dict = {};
-				dict["date"] = key
-				Object.keys(data[key]).forEach(
-				  function(key2) {
-					dict[key2] = data[key][key2]
-				  }
-				)
-				return dict;
-			  }
-			)
-
-
-			var total = 0;
-			if(begin == false || finish == false || begin == "first" || finish == "last"){
-			  diff = cats.map(function(cat){
-				var dict = { id: cat,
-				  value : data2[data2.length - 1][cat] - data2[0][cat]}
-				total += dict.value
-				return dict;
-			  })
-					} else {
-			  diff = cats.map(function(cat){
-				var dict = { id: cat,
-				  value : data[finish][cat] - data[begin][cat]}
-				total += dict.value
-				return dict;
-			  })
-			}
-
-			var best = [];
-			var minVal = 1000000000;
-			for(let i = 0; i < cats.length; i++){
-			  if (best.length < nb_display){
-				best.push(i)
-
-				if (diff[i]["value"] < minVal){
-				  minVal = diff[i]["value"]
-				}
-			  } else {
-				if (diff[i]["value"] > minVal){
-				  for(let j = 0; j < nb_display; j++){
-					if (diff[best[j]].value == minVal){
-					  best[j] = i
-					  break;
-					}
-				  }
-				  minVal = Number.MAX_VALUE;
-				  for(let j = 0; j < nb_display; j++){
-					if (diff[best[j]]["value"] < minVal){
-					  minVal = diff[best[j]]["value"]
-					}
-				  }
-				}
-			  }
-			}
-
-
-			var to_display = diff.filter(function(d,i){
-			  for(let j = 0; j < cats.length; j++){
-				if (i == best[j]){
-				  return true;
-				}
-			  }
-			  return false;
-			});
-
-			maxima = 0
-
-			to_display.forEach(function(d){
-			  if (d["value"] > maxima){
-				maxima = d["value"]
-			  }
-			})
-
-			function keysrt(key,desc) {
-			  return function(a,b){
-			   return desc ? ~~(a[key] > b[key]) : ~~(a[key] < b[key]);
-			  }
-			}
-			to_display.sort(keysrt("value"))
-
-			var width_ = d3.scaleLinear()
-			.domain([0,maxima])
-			.range([width - 150 , 0.05 * width]);
-
-			var y = d3.scaleLinear()
-			.domain([0,parseInt(nb_display) + 1])
-			.range([height * 0.1, height]);
-
-			var xperCent = d3.scaleLinear()
-			.domain([0,Math.floor(1 + to_display[0].value/total * 100)])
-			.range([150 , width - 20]);
-
-
-			svg.selectAll("rect").data(to_display).enter()
-					.append("rect")
-					.attr("width", function(d) {
-				return width - (150 + width_(d["value"]));
-			  }).attr("height", (height * 0.8) / (parseInt(nb_display) + 1))
-					.attr("x", function(d) { return  150; })
-					.attr("y",  function(d,i) { return y(i); })
-					.style("fill", function(d){ return "steelBlue"})
-
-			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/cat_userfriendly.json", function(dataAno){
-
-			  svg.selectAll("text25").data(to_display).enter()
-			  .append("text")
-			  .text(function(d){
-				return dataAno[d.id]
-			  })
-			  .attr("y", function(d,i){return y(i) + ((height * 0.8) / (nb_display + 1))/2})
-			  .attr("x", 10)
-			  .attr("font-size", 12)
-			  .attr("font-family", "monospace");
-
-			})
-
-			var tab = []
-			for(let i = 0; i < 1 + to_display[0].value/total * 100; i++){
-			  tab.push(i)
-			}
-
-			svg.selectAll("text2").data(tab).enter()
-			.append("text")
-			.text(function(d){
-			  return d + "%"
-			})
-			.attr("y", height *0.99)
-			.attr("x", function(d){return xperCent(d)})
-			.attr("font-size", 12)
-			.attr("font-family", "monospace");
-
-		    });
-		  }
-
-		  d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
-
-			  keys = Object.keys(data)
-			  keys.forEach( function(key){
-
-				var node1 = document.createElement("option");
-				var node2 = document.createElement("option");
-
-				var textnode1 = document.createTextNode(key);
-				var textnode2 = document.createTextNode(key);
-				// Create a text node
-						node1.appendChild(textnode1);
-				node2.appendChild(textnode2);
-
-						document.getElementById("d3-debut").appendChild(node1)
-
-				document.getElementById("d3-fin").appendChild(node2)
-			  })
-
-		  })
-
-		  d3.select("#select-section").on("change", function(d) {
-			  var begin = d3.select("#d3-debut").node().value;
-			  var finish = d3.select("#d3-fin").node().value;
-			  var nb_cats = d3.select("#nb_cats").node().value;
-
-			  display_cats(begin,finish,nb_cats)
-		  })
-
-		  display_cats(false,false,d3.select("#nb_cats").node().value)
-
-		  //------------------------------- FIN CATEGORIES --------------------------------------------------
+		  
         </script>
         </div>
       </div>
