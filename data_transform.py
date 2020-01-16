@@ -6,22 +6,33 @@ import json
 # Netoyeur de données
 # Si une vidéo est supprimé, on garde son nombre de vue avant suppression
 def DataClean(data_dict):
+    n = 0
+    o = 0
     for video in data_dict:
         tmp = 0
+        if "cost" in data_dict[video]:
+            o = o + 1
+            if data_dict[video]["cost"] == "None":
+                data_dict[video]["cost"] = 0
+        else:
+            n = n+ 1
+        
         for t in data_dict[video]["evolution"]:
             if t["percent"] == -1:
                 t["views"] = tmp
             else:
                 tmp = t["views"]
+    print("O = ",o)
+    print("N = ",n)
     return data_dict
 
 # Transforme les tuples en dictionnaire
 def tupleToDict(data_tuple):
     data_dict = {}
     for d in data_tuple:
-        data_dict[d] = {}
-        for c in data_tuple[d]:
-            data_dict[d][c[0]] = c[1]
+        data_dict = {}
+        for c in data_tuple:
+            data_dict[c[0]] = c[1]
     return data_dict
 
 def nameToRef(data_dict):
@@ -70,6 +81,18 @@ def toDataCategorie(data_dict):
         d = sorted(data_cat[t].items(), reverse=True, key=lambda t: t[1])
         data_cat[t] = d
     return tupleToDict(data_cat)
+
+
+def toDataCategorieCost(data_dict):
+    data_cat = {}
+    for video in data_dict:
+        if "cost" in data_dict[video]:
+            for c in data_dict[video]["categories"]:
+                if not(c in data_cat):
+                    data_cat[c] = 0
+                data_cat[c] = data_cat[c] + data_dict[video]["cost"]
+    d = sorted(data_cat.items(), reverse=True, key=lambda t: t[0])
+    return tupleToDict(d)
 
 # Transforme les données en views par mots
 def toDataTitleWords(data_dict):
@@ -270,7 +293,7 @@ def bestVideos(data_dict, x):
         videos[d[0]] = data_dict[d[0]]
     return videos
 
-FILES = True
+FILES = False
 
 with open('data/data.json') as json_data:
 
@@ -316,9 +339,20 @@ with open('data/data.json') as json_data:
         ntr = nameToRef(data_clean)
         dictToFile(ntr, "data/catAno")
 
+        cq = toDataCategorieCost(data_clean)
+        dictToFile(cq, "data/costCat")
+
     else:
 
         data_clean = DataClean(data_dict)
+        print("DataClean")
+        cq = toDataCategorieCost(data_clean)
+        print("DataCost")
+        dictToFile(cq, "data/costCat")
+        print("File")
+
+        exit()
+
         fluc = nameToRef(data_clean)
         print(fluc)
 
