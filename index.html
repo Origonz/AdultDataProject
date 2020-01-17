@@ -301,12 +301,12 @@
               // Il faut le dimensionner en fonction du contenu
               tooltip
                 .append("polyline")
-                .attr("points", "0,0 0,40 55,40 60,45 65,40 120,40 120,0 0,0")
+                .attr("points", "0,-10 0,40 55,40 60,45 65,40 120,40 120,-10 0,-10")
                 .style("fill", "#f9f9f9")
                 .style("stroke", "#3498db")
                 .style("opacity", "0.9")
                 .style("stroke-width", "1")
-                .attr("transform", "translate(-60, -55)");
+                .attr("transform", "translate(-50, -45)");
 
               // Cet élément contiendra tout notre texte
               var textviews = tooltip
@@ -315,7 +315,7 @@
                 .style("font-family", "Segoe UI")
                 .style("color", "#333333")
                 .style("fill", "#333333")
-                .attr("transform", "translate(-42, -40)");
+                .attr("transform", "translate(-32, -40)");
 
               // Element pour la date avec positionnement spécifique
               textviews
@@ -327,20 +327,35 @@
               textviews
                 .append("tspan")
                 .style("fill", "#3498db")
-                .attr("dx", "-120")
+                .attr("dx", "-110")
                 .attr("dy", "15")
                 .text("●");
 
-              // Le texte "Cours : "
               textviews
                 .append("tspan")
                 .attr("dx", "5")
                 .text("Views : ");
 
-              // Le texte pour la valeur de l'or à la date sélectionnée
               textviews
                 .append("tspan")
-                .attr("id", "tooltip-close")
+                .attr("id", "tooltip-views")
+                .style("font-weight", "bold");
+
+              textviews
+                .append("tspan")
+                .style("fill", "#3498db")
+                .attr("dx", "-110")
+                .attr("dy", "15")
+                .text("●");
+
+              textviews
+                .append("tspan")
+                .attr("dx", "5")
+                .text("Cost : ");
+                
+              textviews
+                .append("tspan")
+                .attr("id", "tooltip-cost")
                 .style("font-weight", "bold");
 
               return tooltip;
@@ -359,7 +374,8 @@
                 data.forEach(function(d) {
                   d.dateO = d.date;
                   d.date = parseDateviews(d.date);
-                  d.views = +d.views;
+                  d.views = d.views;
+                  d.cost = d.cost;
                 });
 
                 // Scale the range of the data
@@ -401,7 +417,7 @@
                   var x0views = xviews.invert(d3.mouse(this)[0]),
                     iviews = bisectDate(data, x0views),
                     dviews = data[iviews];
-					
+                  tooltip.style("z-index", "400")
                   tooltip.attr(
                     "transform",
                     "translate(" +
@@ -412,7 +428,8 @@
                   );
 
                   d3.select("#tooltip-date").text(dviews.dateO);
-                  d3.select("#tooltip-close").text(dviews.views);
+                  d3.select("#tooltip-views").text(dviews.views);
+                  d3.select("#tooltip-cost").text(dviews.cost);
                 }
 
                 svgviews
@@ -1113,17 +1130,11 @@
     </br>
     </br>
       <p>
-        Ce graphe présente les vidéos collectées par rapport à leurs durées en
-        secondes et leurs nombres de vues. Ainsi, les vidéos les plus longues
-        représentent un enjeu en terme de stockage dans les datacenters et les
-        vidéos les plus vues un enjeu en trafic. On peut voir que la majorité
-        des vidéos qui sont stockées dans les datacenters sont très peu vues,
-        il serait intéressant de procéder à un "nettoyage" quand une vidéo est
-        assez longue et ne rencontre pas une certaine popularité, en vu de
-        réduire les consommations énergétiques.
-
-        On peut zoomer le graphe en sélectionnant une zone.
-        La durée est exprimée en secondes.
+        Ce graphe permet de visualiser la consommation énergétique liée aux différentes 
+        catégories provenant des vidéos supprimées,on a remarqué que pas mal de vidéos sont 
+        publiées pour ensuite être supprimées tenant compte du fait que le stockage et 
+        la visualisation de ces vidéos est très coûteux en énergie d’où l’objet de ce graphe 
+        qui met en exergue le gaspillage d’énergie lié aux vidéos supprimées .
       </p>
     </div>
   </div>
@@ -1135,107 +1146,148 @@
     <div class="col-sm-8">
       <div id="visu_graph">
         <script>
+   var marginD = {top: 80, right: 180, bottom: 150, left: 180},
+    widthD = 960 - marginD.left - marginD.right,
+    heightD = 500 - marginD.top - marginD.bottom;
 
-           var canvas = d3.select("#visu_graph").append("svg")
-             .attr("width", 900)
-             .attr("height", 700)
-             .append("g")
-               .attr("transform","translate(50,0)");
+		var svgD = d3.select("#visu_graph").append("svg")
+			.attr("width", widthD + marginD.left + marginD.right)
+    	.attr("height", heightD + marginD.top + marginD.bottom)
+		.append("g")
+    	.attr("transform", "translate(" + marginD.left + "," + marginD.top + ")");
+    
+    
+     
+    
+    
+    d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/costCat2.json", function(error, data){
 
+			
+  		//console.log(data);     
+        
+      var y = d3.scale.sqrt()
+			.domain([0, d3.max(data, function(d){
+				return d.cost;
+			})])
+			.range([heightD,0]);
 
+			var x = d3.scale.ordinal()
+				.domain(data.map(function(d){ return d.id;}))
+				.rangeBands([0,widthD]);
+      
+      var xAxis1 = d3.svg.axis()
+				.scale(x)
+	    	.orient("bottom");
 
-
-           const widthD = 800//document.body.clientWidth;
-           const heightD =600// document.body.clientHeight;
-           const marginD = { top: 0, right: 70, bottom: 0, left: 40};
-           const innerWidth = widthD - marginD.left - marginD.right;
-           const innerHeight = heightD - marginD.top - marginD.bottom;
-
-           var tree=d3.layout.tree()
-             .size([innerHeight, innerWidth])
-             .separation(function(a, b) { return a.parent === b.parent ? 10 : 15; });
-
-
-         var zoom = d3.behavior.zoom()
-             .scaleExtent([0.50, 10])
-             .on('zoom', redraw);
-
-           d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/dendogram.json",function(data){
-             //console.log(data)
-             var nodes=tree.nodes(data);
-             //console.log(nodes)
-             var links=tree.links(nodes);
-             //console.log(links);
-             var node=canvas.selectAll(".node")
-               .data(nodes)
-               .enter()
-               .append("g")
-                 .attr("class","node")
-                 .attr("transform",function(d){return "translate(" + d.y + "," + d.x+")";})
-               .on("mouseover", function(d, i) {
-               d3.select(this).style("fill", "red");
-                 fade(d.id, 0.2);
-             })
-             .on("mouseout", function(d, i) {
-               d3.select(this).style("fill", "black");
-               fadeOut()
-             })
-             .call(zoom)
-
-             node.append("circle")
-               .attr("r",1.5)
-               .attr("fill","darkblue")
-
-             node.append("text")
-               .attr('dy', '0.20em')
-               .attr('text-anchor', d =>d.children ? 'middle' : 'start')
-               .attr('font-size', d => 2.1 - d.depth + 'em')
-               .text(function(d){return "     "+d.id +" " + d.view ;})
+			var yAxis1 = d3.svg.axis()
+				.scale(y)
+	    	.orient("left");
+      
+      svgD.append("g")
+    	.attr("class", "x axis")
+    	.attr("transform", "translate(0," + heightD + ")")
+    	.call(xAxis1)
+    	.selectAll("text")
+    	.style("font-size", "8px")
+      	.style("text-anchor", "end")
+      	.attr("dx", "-.8em")
+      	.attr("dy", "-.55em")
+      	.attr("transform", "rotate(-90)" );
 
 
-             var diagonal=d3.svg.diagonal()
-               .projection(function(d){return [d.y,d.x]; })
+ 		
+       svgD.append("g")
+        .attr("class", "y axis")
+        .append("text")
+        .attr("class", "label")
+       .attr("transform", "rotate(360)") // although axis is rotated, text is not
+       .attr("y",0.7) 
+       .style("text-anchor", "end")
+       .text("energic cost");
+      
+			var tooltip =d3.select("body").append("div").attr("class", "toolTip")
+                  //.attr("class", "tooltip")
+      						.style("display", "inline-block")
+                  .style("opacity", 0);
 
-             canvas.selectAll(".links")
-               .data(links)
-               .enter()
-               .append("path")
-               .attr("class","link")
-               .attr("fill","none")
-               .attr("stroke","#ADADAD")
-               .attr("d",diagonal)
-               .call(zoom);
+       // tooltip mouseover event handler
+       var tipMouseover = function(d) {
+            var html  = d.id + "<br/>" +"<b>" + d.cost + "Mo </b>";
 
-             var opacity = d3.scale.sqrt()
-                  .domain([d3.min(data, function (d) { return d.depth; }),d3.max(data, function (d) { return d.depth; })])
-                  .range([1, .5]);
+            tooltip.html(html)
+			             .style("left", (d3.event.pageX + 15) + "px")
+                   .style("top", (d3.event.pageY - 28) + "px")
+                   .transition()
+                   .duration(200) // ms
+                   .style("opacity", .9) // started as 0!
 
-           })
+        };
+        // tooltip mouseout event handler
+        var tipMouseout = function(d) {
+            tooltip.transition()
+        	         .duration(300) // ms
+                   .style("opacity", 0); // don't care about position!
+        };
 
-           function redraw() {
-           canvas.attr('transform', 'translate(' + d3.event.translate + ')' +
-               ' scale(' + d3.event.scale + ')');
-           }
+      
+      svgD.selectAll("rectangle")
+			.data(data)
+			.enter()
+			.append("rect")
+			.attr("class","rectangle")
+			.attr("width", widthD/100)
+			.attr("height", function(d){
+				return heightD - y(d.cost);
+			})
+			.attr("x", function(d, i){
+				return (width / data.length) * i ;
+			})
+			.attr("y", function(d){
+				return y(d.cost);
+			})
+      .on('mouseover',tipMouseover )
+      .on('mouseout',tipMouseout );
+      
+      
+      
+      svgD
+        .append("text")
+        .attr("x", widthD / 2)
+        .attr("y", 0 - marginD.top / 2)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "underline")
+        .text("Consommation énergétique par catégorie des vidéos supprimées");
+      
+			
+      var zoom = d3.behavior.zoom()                            
+        // Don’t allow the zoomed area to be bigger than the viewport.
+        .scaleExtent([1, 2.5])
+        //.translateExtent([[0, 0], [width, height]])
+        //.extent([[0, 0], [width, height]])
+        .on("zoom", zoomed);                
+
+    svgD.style("transform-origin", "50% 50% 0");
+
+    svgD.call(zoom);
+    
+      function zoomed() {         
+        svgD.attr("transform",d3.event.transform)
+        	 .attr('transform', 'translate(' + d3.event.translate + ')' +
+        ' scale(' + d3.event.scale + ')');
+      
+      svgD.selectAll(".x axis").call(xAxis1);
+      svgD.selectAll(".y axis").call(yAxis1);
+    }  
+      
+      
+      
+});
+    
+    
 
 
-
-           function fade(c, opacity) {
-               canvas.selectAll("circle")
-                  .filter(function (d) {
-                  return d.id != c;
-                  })
-                  .transition()
-                  .style("opacity", opacity);
-
-           }
-
-           function fadeOut() {
-                 canvas.selectAll("circle")
-                    .transition()
-                    .style("opacity", 1);
-           }
-
-         </script>
+  </script>
 
       </div>
     </div>
