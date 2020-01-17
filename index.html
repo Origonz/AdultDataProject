@@ -476,14 +476,12 @@
     <div class="col-sm-8">
       <div id="days_graph">
     <script>
-<<<<<<< HEAD
+
+
+    var tooltip_views = d3.select('#days_graph').append('div')
+      .	attr('class', 'hidden tooltip');
+
       var width = 700;
-=======
-      var tooltip_views = d3.select('#days_graph').append('div')
-		.	attr('class', 'hidden tooltip');
-	  
-	  var width = 700;
->>>>>>> 9afbd9f3b208cefe5a3336e1fea1a199867cd682
       var height = 500;
       var marginWidth = width * 0.2;
       var marginHeight = height * 0.2;
@@ -555,35 +553,28 @@
             .attr("height", function(d) {
           return height_(d.value);
         }).attr("width", (width - marginWidth) * 0.90 / (days.length + 1))
-<<<<<<< HEAD
-            .attr("y", function(d) {
-        return  height - marginHeight/2 - height_(d.value); })
-            .attr("x",  function(d,i) { return x(i); })
-            .style("fill", function(d){ return "steelblue"})
-=======
         .attr("y", function(d) {
-			return  height - marginHeight/2 - height_(d.value); })
+      return  height - marginHeight/2 - height_(d.value); })
         .attr("x",  function(d,i) { return x(i); })
         .style("fill", function(d){ return "steelblue"})
-		.on('mousemove', function(d) {
-			// on recupere la position de la souris
-			var mousePosition = d3.mouse(this);
-				// on affiche le toolip
-			tooltip_views.classed('hidden', false)
-				// on positionne le tooltip en fonction 
-				// de la position de la souris
-			.attr('style', 'left:' + (mousePosition[0] + 300) +
-				'px; top:' + (mousePosition[1] - 0) + 'px')
-						// on recupere le nom de l'etat 
-			.html(function(){
-				  return "nombre de vues: " + d.value
-			});
-		})
-		.on('mouseout', function() {
-			// on cache le toolip
-			tooltip_views.classed('hidden', true);
-		});
->>>>>>> 9afbd9f3b208cefe5a3336e1fea1a199867cd682
+    .on('mousemove', function(d) {
+      // on recupere la position de la souris
+      var mousePosition = d3.mouse(this);
+        // on affiche le toolip
+      tooltip_views.classed('hidden', false)
+        // on positionne le tooltip en fonction
+        // de la position de la souris
+      .attr('style', 'left:' + (mousePosition[0] + 300) +
+        'px; top:' + (mousePosition[1] - 0) + 'px')
+            // on recupere le nom de l'etat
+      .html(function(){
+          return "nombre de vues: " + d.value
+      });
+    })
+    .on('mouseout', function() {
+      // on cache le toolip
+      tooltip_views.classed('hidden', true);
+    });
 
 
         svg_days.selectAll("text25").data(dataParsed).enter()
@@ -642,15 +633,10 @@
 		<script>
 			// ---------------------------------------------------------------------------------------------
 		  // SCRIPT CATEGORIES
-<<<<<<< HEAD
+      var tooltip_cats = d3.select('#category_graph').append('div')
+            .attr('class', 'hidden tooltip');
 
-=======
-		  
-		  var tooltip_cats = d3.select('#category_graph').append('div')
-			      .attr('class', 'hidden tooltip');
-		  
->>>>>>> 9afbd9f3b208cefe5a3336e1fea1a199867cd682
-		  var margin = {
+      var margin = {
               top: 40,
               right: 40,
               bottom: 30,
@@ -780,18 +766,16 @@
 					.attr("x", function(d) { return  150; })
 					.attr("y",  function(d,i) { return y(i); })
 					.style("fill", function(d){ return "steelBlue"})
-<<<<<<< HEAD
-=======
-					.on('mousemove', function(d) {
+          .on('mousemove', function(d) {
 							// on recupere la position de la souris
 						var mousePosition = d3.mouse(this);
 							// on affiche le toolip
 						tooltip_cats.classed('hidden', false)
-							// on positionne le tooltip en fonction 
+							// on positionne le tooltip en fonction
 							// de la position de la souris
 						.attr('style', 'left:' + (mousePosition[0] + 300) +
 							'px; top:' + (mousePosition[1] + 80) + 'px')
-									// on recupere le nom de l'etat 
+									// on recupere le nom de l'etat
 						.html(function(){
 							  return "nombre de vues: " + d.value
 						});
@@ -800,7 +784,6 @@
 						// on cache le toolip
 						tooltip_cats.classed('hidden', true);
 					})
->>>>>>> 9afbd9f3b208cefe5a3336e1fea1a199867cd682
 
 			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/cat_userfriendly.json", function(dataAno){
 
@@ -1161,47 +1144,47 @@
       widthD = 960 - marginD.left - marginD.right,
       heightD = 500 - marginD.top - marginD.bottom;
 
-  var xD = d3.scaleBand()
+      var xD = d3.scaleBand()
       .rangeRound([0, widthD], .1)
-  		.paddingInner(0.1);
+      .paddingInner(0.1);
 
-  var yD = d3.scaleLinear()
+      var yD = d3.scaleLinear()
       .range([heightD, 0]);
 
-  var xAxis = d3.axisBottom()
+      var xAxis = d3.axisBottom()
       .scale(xD)
-  ;
+      ;
 
-  var yAxis = d3.axisLeft()
+      var yAxis = d3.axisLeft()
       .scale(yD)
 
-   var svgD = d3.select("#visu_graph").append("svg")
+      var svgD = d3.select("#visu_graph").append("svg")
       .attr("width", widthD + marginD.left + marginD.right)
       .attr("height", heightD + marginD.top + marginD.bottom)
-    .append("g")
+      .append("g")
       .attr("transform", "translate(" + marginD.left + "," + marginD.top + ")")
 
 
 
-  d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/costCat2.json",function( data) {
+      d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/costCat2.json",function( data) {
 
 
 
-    xD.domain(data.map(function(d) { return d.id; }));
-    yD.domain([0, d3.max(data, function(d) { return d.cost; })]);
+      xD.domain(data.map(function(d) { return d.id; }));
+      yD.domain([0, d3.max(data, function(d) { return d.cost; })]);
 
-    svgD.append("g")
+      svgD.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + heightD + ")")
         .call(xAxis)
-    		.selectAll("text")
-      	.style("font-size", "8px")
-        	.style("text-anchor", "end")
-        	.attr("dx", "-.8em")
-        	.attr("dy", "-.55em")
-        	.attr("transform", "rotate(-90)" );
+        .selectAll("text")
+        .style("font-size", "8px")
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", "-.55em")
+          .attr("transform", "rotate(-90)" );
 
-    svgD.append("g")
+      svgD.append("g")
         .attr("class", "y axis")
         .call(yAxis)
       .append("text")
@@ -1211,24 +1194,24 @@
         .style("text-anchor", "end")
         .text("energic cost");
 
-     zooming = ()=>{
+      zooming = ()=>{
         const {x,y,k} = d3.event.transform
         let t = d3.zoomIdentity
        t =  t.translate(x,y).scale(k).translate(50,50)
         svgD.attr("transform", t)
       }
 
-     var zoomD = d3.zoom()
+      var zoomD = d3.zoom()
       .scaleExtent([1, 4])
       .on("zoom", zooming);
 
-     svgD.call(zoomD);
+      svgD.call(zoomD);
 
 
-    var tooltip =d3.select("#visu2")
+      var tooltip =d3.select("#visu2")
                    .append("div")
                    .attr("id", "toolTipVisu")
-        						.style("display", "block")
+                    .style("display", "block")
                     .style("opacity", 0);
 
 
@@ -1237,7 +1220,7 @@
               var html  = d.id + "<br/>" +"<b>" + d.cost + "Mo </b>";
 
               tooltip.html(html)
-  			             .style("left", (d3.event.pageX + 15) + "px")
+                     .style("left", (d3.event.pageX + 15) + "px")
                      .style("top", (d3.event.pageY - 28) + "px")
                      .transition()
                      .duration(200) // ms
@@ -1247,12 +1230,12 @@
           // tooltip mouseout event handler
           var tipMouseout = function(d) {
               tooltip.transition()
-          	         .duration(300) // ms
+                     .duration(300) // ms
                      .style("opacity", 0); // don't care about position!
           };
 
 
-    svgD.selectAll(".bar")
+      svgD.selectAll(".bar")
         .data(data)
       .enter().append("rect")
         .attr("class", "bar")
@@ -1260,9 +1243,9 @@
         .attr("width", xD.bandwidth())
         .attr("y", function(d) { return yD(d.cost); })
         .attr("height", function(d) { return heightD - yD(d.cost); })
-    		.on('mouseover',tipMouseover )
+        .on('mouseover',tipMouseover )
         .on('mouseout',tipMouseout );
-  });
+      });
 
 
 
@@ -1270,7 +1253,7 @@
 
 
 
-  </script>
+      </script>
 
       </div>
     </div>
