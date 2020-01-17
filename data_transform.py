@@ -2,28 +2,23 @@ import json
 from datetime import datetime, timedelta
 import sys
 import json
+import csv
 
 # Netoyeur de données
 # Si une vidéo est supprimé, on garde son nombre de vue avant suppression
 def DataClean(data_dict):
-    n = 0
-    o = 0
     for video in data_dict:
         tmp = 0
         if "cost" in data_dict[video]:
-            o = o + 1
             if data_dict[video]["cost"] == "None":
                 data_dict[video]["cost"] = 0
-        else:
-            n = n+ 1
-        
+        if "duration" in data_dict[video] or data_dict[video]["duration"] == "None" :
+            data_dict[video]["duration"] = 5
         for t in data_dict[video]["evolution"]:
             if t["percent"] == -1:
                 t["views"] = tmp
             else:
                 tmp = t["views"]
-    print("O = ",o)
-    print("N = ",n)
     return data_dict
 
 # Transforme les tuples en dictionnaire
@@ -34,6 +29,19 @@ def tupleToDict(data_tuple):
         for c in data_tuple:
             data_dict[c[0]] = c[1]
     return data_dict
+
+def dictToCSV(data_dict, name):
+    with open(name + '.csv', 'w', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',',
+                        quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        row = ["date","cost","views"]
+        spamwriter.writerow(row)
+        for i in data_dict:
+            row = []
+            row.append(i)
+            for j in data_dict[i]:
+                row.append(data_dict[i][j])
+            spamwriter.writerow(row)
 
 def nameToRef(data_dict):
     dict_cat = {}
@@ -60,6 +68,36 @@ def nameToRef(data_dict):
                 fin = False
     return dict_cat
 
+def toNewViewCost(data_dict):
+    data_time = {}
+    for video in data_dict:
+        for t in data_dict[video]["evolution"]:
+            d = datetime.utcfromtimestamp(t["time"]).strftime('%d-%m-%Y %H:%M:%S')
+            if not(d in data_time):
+                data_time[d] = 0
+            data_time[d] = data_time[d] + t["views"]
+    data_NV = {}
+    viewL = 0
+    last = 0
+    viewC = {}
+    for d in data_time:
+        if not(d in data_NV):
+            data_NV[d] = {}
+        if last == 0:
+            viewC[d] = 0
+        else:
+            viewC[d] = data_time[d] - viewL
+        duration = int(data_dict[video]["duration"])
+        if duration < 10:
+            dur = duration
+        else:
+            dur = 10
+        data_NV[d]["cost"] = viewC[d] * dur
+        data_NV[d]["views"] = viewC[d]
+        viewL = data_time[d]
+        last = d
+    return data_NV
+
 # Ecrire dans fichier
 def dictToFile(data_dict, name):
     with open(name + '.json', 'w', encoding='utf-8') as f:
@@ -81,7 +119,6 @@ def toDataCategorie(data_dict):
         d = sorted(data_cat[t].items(), reverse=True, key=lambda t: t[1])
         data_cat[t] = d
     return tupleToDict(data_cat)
-
 
 def toDataCategorieCost(data_dict):
     data_cat = {}
@@ -346,9 +383,9 @@ with open('data/data.json') as json_data:
 
         data_clean = DataClean(data_dict)
         print("DataClean")
-        cq = toDataCategorieCost(data_clean)
+        cq = toNewViewCost(data_clean)
         print("DataCost")
-        dictToFile(cq, "data/costCat")
+        dictToCSV(cq, "data/newView")
         print("File")
 
         exit()
