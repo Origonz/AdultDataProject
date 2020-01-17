@@ -287,12 +287,12 @@
               // Il faut le dimensionner en fonction du contenu
               tooltip
                 .append("polyline")
-                .attr("points", "0,0 0,40 55,40 60,45 65,40 120,40 120,0 0,0")
+                .attr("points", "0,-10 0,40 55,40 60,45 65,40 120,40 120,-10 0,-10")
                 .style("fill", "#f9f9f9")
                 .style("stroke", "#3498db")
                 .style("opacity", "0.9")
                 .style("stroke-width", "1")
-                .attr("transform", "translate(-60, -55)");
+                .attr("transform", "translate(-50, -45)");
 
               // Cet élément contiendra tout notre texte
               var textviews = tooltip
@@ -301,7 +301,7 @@
                 .style("font-family", "Segoe UI")
                 .style("color", "#333333")
                 .style("fill", "#333333")
-                .attr("transform", "translate(-42, -40)");
+                .attr("transform", "translate(-32, -40)");
 
               // Element pour la date avec positionnement spécifique
               textviews
@@ -313,20 +313,35 @@
               textviews
                 .append("tspan")
                 .style("fill", "#3498db")
-                .attr("dx", "-120")
+                .attr("dx", "-110")
                 .attr("dy", "15")
                 .text("●");
 
-              // Le texte "Cours : "
               textviews
                 .append("tspan")
                 .attr("dx", "5")
                 .text("Views : ");
 
-              // Le texte pour la valeur de l'or à la date sélectionnée
               textviews
                 .append("tspan")
-                .attr("id", "tooltip-close")
+                .attr("id", "tooltip-views")
+                .style("font-weight", "bold");
+
+              textviews
+                .append("tspan")
+                .style("fill", "#3498db")
+                .attr("dx", "-110")
+                .attr("dy", "15")
+                .text("●");
+
+              textviews
+                .append("tspan")
+                .attr("dx", "5")
+                .text("Cost : ");
+                
+              textviews
+                .append("tspan")
+                .attr("id", "tooltip-cost")
                 .style("font-weight", "bold");
 
               return tooltip;
@@ -345,7 +360,8 @@
                 data.forEach(function(d) {
                   d.dateO = d.date;
                   d.date = parseDateviews(d.date);
-                  d.views = +d.views;
+                  d.views = d.views;
+                  d.cost = d.cost;
                 });
 
                 // Scale the range of the data
@@ -387,7 +403,7 @@
                   var x0views = xviews.invert(d3.mouse(this)[0]),
                     iviews = bisectDate(data, x0views),
                     dviews = data[iviews];
-					
+                  tooltip.style("z-index", "400")
                   tooltip.attr(
                     "transform",
                     "translate(" +
@@ -398,7 +414,8 @@
                   );
 
                   d3.select("#tooltip-date").text(dviews.dateO);
-                  d3.select("#tooltip-close").text(dviews.views);
+                  d3.select("#tooltip-views").text(dviews.views);
+                  d3.select("#tooltip-cost").text(dviews.cost);
                 }
 
                 svgviews
