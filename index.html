@@ -93,14 +93,14 @@
     	stroke: #000;
     	shape-rendering: crispEdges;
   	}
-	
+
 	.slidecontainer {
 	  width: 80%; /* Width of the outside container */
 	  position: relative;
 	  left: 10%;
 	  display: inline-block;
 	}
-	
+
 	/* The slider itself */
 	.slider {
 	  -webkit-appearance: none;  /* Override default CSS styles */
@@ -136,20 +136,19 @@
 	  background: #4CAF50; /* Green background */
 	  cursor: pointer; /* Cursor on hover */
 	}
-	
-	.hidden {
-        display: none;
-    }
-	
-    div.tooltip {
-        color: #222;
-        background-color: #fff;
-        padding: .5em;
-        text-shadow: #f5f5f5 0 1px 0;
-        border-radius: 2px;
-        opacity: 0.9;
-        position: absolute;
-    }
+
+  .bar { fill: steelblue; }
+
+  .toolTipVisu{
+	position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  border: 1px solid #6F257F;
+  padding: 14px;
+  text-align: center;
+}
 
     </style>
   </head>
@@ -205,11 +204,11 @@
 </br>
   <p>
       Les vidéos pour adulte représentent plus de <b>30%</b> d'internet et represente un coût énorme en stockage et en transfert.
-      En 2019, Pornhub accueillait <b>115 millions de visite par jour</b>, ce qui correspond à 18 000 terabytes de données transféré par jour. 
+      En 2019, Pornhub accueillait <b>115 millions de visite par jour</b>, ce qui correspond à 18 000 terabytes de données transféré par jour.
       Soit <b>6597 Petabytes</b> cette année, ce qui fait une consomation énergétique énorme.
       Et il est important de donner aux sites mais aussi aux auteurs des indices quant à la pertinence des vidéos afin de réduire son coût énérgétique.
-    
-      
+
+
     </p>
   </div>
     </div>
@@ -352,7 +351,7 @@
                 .append("tspan")
                 .attr("dx", "5")
                 .text("Cost : ");
-                
+
               textviews
                 .append("tspan")
                 .attr("id", "tooltip-cost")
@@ -477,10 +476,12 @@
     <div class="col-sm-8">
       <div id="days_graph">
     <script>
-      var tooltip_views = d3.select('#days_graph').append('div')
-		.	attr('class', 'hidden tooltip');
-	  
-	  var width = 700;
+
+
+    var tooltip_views = d3.select('#days_graph').append('div')
+      .	attr('class', 'hidden tooltip');
+
+      var width = 700;
       var height = 500;
       var marginWidth = width * 0.2;
       var marginHeight = height * 0.2;
@@ -553,27 +554,27 @@
           return height_(d.value);
         }).attr("width", (width - marginWidth) * 0.90 / (days.length + 1))
         .attr("y", function(d) {
-			return  height - marginHeight/2 - height_(d.value); })
+      return  height - marginHeight/2 - height_(d.value); })
         .attr("x",  function(d,i) { return x(i); })
         .style("fill", function(d){ return "steelblue"})
-		.on('mousemove', function(d) {
-			// on recupere la position de la souris
-			var mousePosition = d3.mouse(this);
-				// on affiche le toolip
-			tooltip_views.classed('hidden', false)
-				// on positionne le tooltip en fonction 
-				// de la position de la souris
-			.attr('style', 'left:' + (mousePosition[0] + 300) +
-				'px; top:' + (mousePosition[1] - 0) + 'px')
-						// on recupere le nom de l'etat 
-			.html(function(){
-				  return "nombre de vues: " + d.value
-			});
-		})
-		.on('mouseout', function() {
-			// on cache le toolip
-			tooltip_views.classed('hidden', true);
-		});
+    .on('mousemove', function(d) {
+      // on recupere la position de la souris
+      var mousePosition = d3.mouse(this);
+        // on affiche le toolip
+      tooltip_views.classed('hidden', false)
+        // on positionne le tooltip en fonction
+        // de la position de la souris
+      .attr('style', 'left:' + (mousePosition[0] + 300) +
+        'px; top:' + (mousePosition[1] - 0) + 'px')
+            // on recupere le nom de l'etat
+      .html(function(){
+          return "nombre de vues: " + d.value
+      });
+    })
+    .on('mouseout', function() {
+      // on cache le toolip
+      tooltip_views.classed('hidden', true);
+    });
 
 
         svg_days.selectAll("text25").data(dataParsed).enter()
@@ -622,21 +623,20 @@
 
 			<input type="number" id="nb_cats" name="nombre"
 			   min="1" max="99" value="15">
-		
+
 			<div class="slidecontainer">
 			  <input type="range" min="0" max="1" value="1" class="slider" id="slider_start" style="width:49%; display: inline-block;">
 			  <input type="range" min="1" max="2" value="2" class="slider" id="slider_end" style="width:49%; display: inline-block;">
 			</div>
 		</div>
-		
+
 		<script>
 			// ---------------------------------------------------------------------------------------------
 		  // SCRIPT CATEGORIES
-		  
-		  var tooltip_cats = d3.select('#category_graph').append('div')
-			      .attr('class', 'hidden tooltip');
-		  
-		  var margin = {
+      var tooltip_cats = d3.select('#category_graph').append('div')
+            .attr('class', 'hidden tooltip');
+
+      var margin = {
               top: 40,
               right: 40,
               bottom: 30,
@@ -645,10 +645,10 @@
             (width = 900 - margin.left - margin.right),
               (height = 500 - margin.top - margin.bottom);
 
-		  
+
 		  var display_cats = function(begin,finish,nb_display){
 			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
-			
+
 			d3.select("#svg_cats").remove();
 			var diff  = [];
 			var cats = [];
@@ -691,7 +691,7 @@
 				total += dict.value
 				return dict;
 			})
-			
+
 
 			var best = [];
 			var minVal = 1000000000;
@@ -766,16 +766,16 @@
 					.attr("x", function(d) { return  150; })
 					.attr("y",  function(d,i) { return y(i); })
 					.style("fill", function(d){ return "steelBlue"})
-					.on('mousemove', function(d) {
+          .on('mousemove', function(d) {
 							// on recupere la position de la souris
 						var mousePosition = d3.mouse(this);
 							// on affiche le toolip
 						tooltip_cats.classed('hidden', false)
-							// on positionne le tooltip en fonction 
+							// on positionne le tooltip en fonction
 							// de la position de la souris
 						.attr('style', 'left:' + (mousePosition[0] + 300) +
 							'px; top:' + (mousePosition[1] + 80) + 'px')
-									// on recupere le nom de l'etat 
+									// on recupere le nom de l'etat
 						.html(function(){
 							  return "nombre de vues: " + d.value
 						});
@@ -822,31 +822,31 @@
 		  d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
 
 			  keys = Object.keys(data)
-			
+
 			var slider_start = document.getElementById("slider_start");
 			var slider_end = document.getElementById("slider_end");
-			
+
 			slider_start.value = 0;
 			slider_start.max = keys.length - 2;
 			slider_end.max = keys.length-1;
 			slider_end.value = keys.length-1;
-			
+
 			display_cats(keys[slider_start.value],keys[slider_end.value],d3.select("#nb_cats").node().value)
-			
+
 			d3.select("#select-section").on("change", function(d) {
-			  
+
 			  var slider_start = document.getElementById("slider_start");
 			  var slider_end = document.getElementById("slider_end");
-			  
+
 			  if (slider_start.value >= slider_end.value){
 				slider_end.value = slider_start.value + 1
 			  }
-				
+
 			  display_cats(keys[slider_start.value],keys[slider_end.value],d3.select("#nb_cats").node().value)
 			})
 		  })
 
-		  
+
 
 
 		  //------------------------------- FIN CATEGORIES --------------------------------------------------
@@ -1127,13 +1127,7 @@
 
     </br>
     </br>
-      <p>
-        Ce graphe permet de visualiser la consommation énergétique liée aux différentes 
-        catégories provenant des vidéos supprimées,on a remarqué que pas mal de vidéos sont 
-        publiées pour ensuite être supprimées tenant compte du fait que le stockage et 
-        la visualisation de ces vidéos est très coûteux en énergie d’où l’objet de ce graphe 
-        qui met en exergue le gaspillage d’énergie lié aux vidéos supprimées .
-      </p>
+
     </div>
   </div>
 
@@ -1141,151 +1135,125 @@
 
 </br>
 </br>
-    <div class="col-sm-8">
+    <div class="col-sm-8" >
       <div id="visu_graph">
+        <div id ="visu2"></div>
         <script>
-   var marginD = {top: 80, right: 180, bottom: 150, left: 180},
-    widthD = 960 - marginD.left - marginD.right,
-    heightD = 500 - marginD.top - marginD.bottom;
 
-		var svgD = d3.select("#visu_graph").append("svg")
-			.attr("width", widthD + marginD.left + marginD.right)
-    	.attr("height", heightD + marginD.top + marginD.bottom)
-		.append("g")
-    	.attr("transform", "translate(" + marginD.left + "," + marginD.top + ")");
-    
-    
-     
-    
-    
-    d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/costCat2.json", function(error, data){
+        var marginD = {top: 80, right: 180, bottom: 150, left: 180},
+      widthD = 960 - marginD.left - marginD.right,
+      heightD = 500 - marginD.top - marginD.bottom;
 
-			
-  		//console.log(data);     
-        
-      var y = d3.scale.sqrt()
-			.domain([0, d3.max(data, function(d){
-				return d.cost;
-			})])
-			.range([heightD,0]);
+      var xD = d3.scaleBand()
+      .rangeRound([0, widthD], .1)
+      .paddingInner(0.1);
 
-			var x = d3.scale.ordinal()
-				.domain(data.map(function(d){ return d.id;}))
-				.rangeBands([0,widthD]);
-      
-      var xAxis1 = d3.svg.axis()
-				.scale(x)
-	    	.orient("bottom");
+      var yD = d3.scaleLinear()
+      .range([heightD, 0]);
 
-			var yAxis1 = d3.svg.axis()
-				.scale(y)
-	    	.orient("left");
-      
+      var xAxis = d3.axisBottom()
+      .scale(xD)
+      ;
+
+      var yAxis = d3.axisLeft()
+      .scale(yD)
+
+      var svgD = d3.select("#visu_graph").append("svg")
+      .attr("width", widthD + marginD.left + marginD.right)
+      .attr("height", heightD + marginD.top + marginD.bottom)
+      .append("g")
+      .attr("transform", "translate(" + marginD.left + "," + marginD.top + ")")
+
+
+
+      d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/costCat2.json",function( data) {
+
+
+
+      xD.domain(data.map(function(d) { return d.id; }));
+      yD.domain([0, d3.max(data, function(d) { return d.cost; })]);
+
       svgD.append("g")
-    	.attr("class", "x axis")
-    	.attr("transform", "translate(0," + heightD + ")")
-    	.call(xAxis1)
-    	.selectAll("text")
-    	.style("font-size", "8px")
-      	.style("text-anchor", "end")
-      	.attr("dx", "-.8em")
-      	.attr("dy", "-.55em")
-      	.attr("transform", "rotate(-90)" );
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + heightD + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .style("font-size", "8px")
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", "-.55em")
+          .attr("transform", "rotate(-90)" );
 
-
- 		
-       svgD.append("g")
+      svgD.append("g")
         .attr("class", "y axis")
-        .append("text")
-        .attr("class", "label")
-       .attr("transform", "rotate(360)") // although axis is rotated, text is not
-       .attr("y",0.7) 
-       .style("text-anchor", "end")
-       .text("energic cost");
-      
-			var tooltip =d3.select("body").append("div").attr("class", "toolTip")
-                  //.attr("class", "tooltip")
-      						.style("display", "inline-block")
-                  .style("opacity", 0);
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0.7)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("energic cost");
 
-       // tooltip mouseover event handler
-       var tipMouseover = function(d) {
-            var html  = d.id + "<br/>" +"<b>" + d.cost + "Mo </b>";
+      zooming = ()=>{
+        const {x,y,k} = d3.event.transform
+        let t = d3.zoomIdentity
+       t =  t.translate(x,y).scale(k).translate(50,50)
+        svgD.attr("transform", t)
+      }
 
-            tooltip.html(html)
-			             .style("left", (d3.event.pageX + 15) + "px")
-                   .style("top", (d3.event.pageY - 28) + "px")
-                   .transition()
-                   .duration(200) // ms
-                   .style("opacity", .9) // started as 0!
+      var zoomD = d3.zoom()
+      .scaleExtent([1, 4])
+      .on("zoom", zooming);
 
-        };
-        // tooltip mouseout event handler
-        var tipMouseout = function(d) {
-            tooltip.transition()
-        	         .duration(300) // ms
-                   .style("opacity", 0); // don't care about position!
-        };
-
-      
-      svgD.selectAll("rectangle")
-			.data(data)
-			.enter()
-			.append("rect")
-			.attr("class","rectangle")
-			.attr("width", widthD/100)
-			.attr("height", function(d){
-				return heightD - y(d.cost);
-			})
-			.attr("x", function(d, i){
-				return (width / data.length) * i ;
-			})
-			.attr("y", function(d){
-				return y(d.cost);
-			})
-      .on('mouseover',tipMouseover )
-      .on('mouseout',tipMouseout );
-      
-      
-      
-      svgD
-        .append("text")
-        .attr("x", widthD / 2)
-        .attr("y", 0 - marginD.top / 2)
-        .attr("text-anchor", "middle")
-        .style("font-size", "16px")
-        .style("text-decoration", "underline")
-        .text("Consommation énergétique par catégorie des vidéos supprimées");
-      
-			
-      var zoom = d3.behavior.zoom()                            
-        // Don’t allow the zoomed area to be bigger than the viewport.
-        .scaleExtent([1, 2.5])
-        //.translateExtent([[0, 0], [width, height]])
-        //.extent([[0, 0], [width, height]])
-        .on("zoom", zoomed);                
-
-    svgD.style("transform-origin", "50% 50% 0");
-
-    svgD.call(zoom);
-    
-      function zoomed() {         
-        svgD.attr("transform",d3.event.transform)
-        	 .attr('transform', 'translate(' + d3.event.translate + ')' +
-        ' scale(' + d3.event.scale + ')');
-      
-      svgD.selectAll(".x axis").call(xAxis1);
-      svgD.selectAll(".y axis").call(yAxis1);
-    }  
-      
-      
-      
-});
-    
-    
+      svgD.call(zoomD);
 
 
-  </script>
+      var tooltip =d3.select("#visu2")
+                   .append("div")
+                   .attr("id", "toolTipVisu")
+                    .style("display", "block")
+                    .style("opacity", 0);
+
+
+         // tooltip mouseover event handler
+         var tipMouseover = function(d) {
+              var html  = d.id + "<br/>" +"<b>" + d.cost + "Mo </b>";
+
+              tooltip.html(html)
+                     .style("left", (d3.event.pageX + 15) + "px")
+                     .style("top", (d3.event.pageY - 28) + "px")
+                     .transition()
+                     .duration(200) // ms
+                     .style("opacity", .9) // started as 0!
+
+          };
+          // tooltip mouseout event handler
+          var tipMouseout = function(d) {
+              tooltip.transition()
+                     .duration(300) // ms
+                     .style("opacity", 0); // don't care about position!
+          };
+
+
+      svgD.selectAll(".bar")
+        .data(data)
+      .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return xD(d.id); })
+        .attr("width", xD.bandwidth())
+        .attr("y", function(d) { return yD(d.cost); })
+        .attr("height", function(d) { return heightD - yD(d.cost); })
+        .on('mouseover',tipMouseover )
+        .on('mouseout',tipMouseout );
+      });
+
+
+
+
+
+
+
+      </script>
 
       </div>
     </div>
@@ -1293,13 +1261,13 @@
 
     </br>
     </br>
-      <p>
-        Ce dendogramme permet de visualiser le nombre de vues par ordre décroissant
-        selon les catégories,les titres et les tags.
-        Il permet aux vidéastes d'identifier les catégories qui font le plus de vues de même
-        que les tags et les mots clés dans les titres de vidéos ainsi cela permet
-        d'éviter le stockage des vidéos inutilement et de consommer de l'énergie.
-      </p>
+    <p>
+      Ce graphe permet de visualiser la consommation énergétique liée aux différentes
+      catégories provenant des vidéos supprimées,on a remarqué que pas mal de vidéos sont
+      publiées pour ensuite être supprimées tenant compte du fait que le stockage et
+      la visualisation de ces vidéos est très coûteux en énergie d’où l’objet de ce graphe
+      qui met en exergue le gaspillage d’énergie lié aux vidéos supprimées .
+    </p>
     </div>
   </div>
 
@@ -1357,7 +1325,7 @@ font-weight: bold;
 color: black;
 text-decoration: none;
 cursor: pointer;
-} 
+}
   </style>
   <script>
     modal = document.getElementById("myModal")
