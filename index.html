@@ -136,6 +136,7 @@
 	  background: #4CAF50; /* Green background */
 	  cursor: pointer; /* Cursor on hover */
 	}
+	
 	.hidden {
         display: none;
     }
@@ -616,6 +617,9 @@
 			// ---------------------------------------------------------------------------------------------
 		  // SCRIPT CATEGORIES
 		  
+		  var tooltip = d3.select('#category_graph').append('div')
+			      .attr('class', 'hidden tooltip');
+		  
 		  var margin = {
               top: 40,
               right: 40,
@@ -746,6 +750,25 @@
 					.attr("x", function(d) { return  150; })
 					.attr("y",  function(d,i) { return y(i); })
 					.style("fill", function(d){ return "steelBlue"})
+					.on('mousemove', function(d) {
+							// on recupere la position de la souris
+						var mousePosition = d3.mouse(this);
+						console.log(mousePosition)
+							// on affiche le toolip
+						tooltip.classed('hidden', false)
+							// on positionne le tooltip en fonction 
+							// de la position de la souris
+						.attr('style', 'left:' + (mousePosition[0] + 350) +
+							'px; top:' + (mousePosition[1] + 80) + 'px')
+									// on recupere le nom de l'etat 
+						.html(function(){
+							  return "nombre de vues: " + d.value
+						});
+					})
+					.on('mouseout', function() {
+						// on cache le toolip
+						tooltip.classed('hidden', true);
+					})
 
 			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/cat_userfriendly.json", function(dataAno){
 
