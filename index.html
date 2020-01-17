@@ -459,7 +459,10 @@
     <div class="col-sm-8">
       <div id="days_graph">
     <script>
-      var width = 700;
+      var tooltip = d3.select('#days_graph').append('div')
+		.	attr('class', 'hidden tooltip');
+	  
+	  var width = 700;
       var height = 500;
       var marginWidth = width * 0.2;
       var marginHeight = height * 0.2;
@@ -531,10 +534,29 @@
             .attr("height", function(d) {
           return height_(d.value);
         }).attr("width", (width - marginWidth) * 0.90 / (days.length + 1))
-            .attr("y", function(d) {
-        return  height - marginHeight/2 - height_(d.value); })
-            .attr("x",  function(d,i) { return x(i); })
-            .style("fill", function(d){ return "steelblue"})
+        .attr("y", function(d) {
+			return  height - marginHeight/2 - height_(d.value); })
+        .attr("x",  function(d,i) { return x(i); })
+        .style("fill", function(d){ return "steelblue"})
+		.on('mousemove', function(d) {
+			// on recupere la position de la souris
+			var mousePosition = d3.mouse(this);
+			console.log(mousePosition)
+				// on affiche le toolip
+			tooltip.classed('hidden', false)
+				// on positionne le tooltip en fonction 
+				// de la position de la souris
+			.attr('style', 'left:' + (mousePosition[0] + 900) +
+				'px; top:' + (mousePosition[1] - 800) + 'px')
+						// on recupere le nom de l'etat 
+			.html(function(){
+				  return "nombre de vues: " + d.value
+			});
+		})
+		.on('mouseout', function() {
+			// on cache le toolip
+			tooltip.classed('hidden', true);
+		});
 
 
         svg_days.selectAll("text25").data(dataParsed).enter()
