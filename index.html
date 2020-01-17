@@ -188,11 +188,14 @@
   </div>
   <div class="col-sm-6">
   <h2>Pourquoi ?</h2>
+</br>
   <p>
       Les vidéos pour adulte représentent plus de <b>30%</b> d'internet et represente un coût énorme en stockage et en transfert.
-      Ainsi, si les 350 millions de visites mensuelles de Xvideos consomment à chaque fois près de 100 megabytes, cela correspond à 30 petabytes
-      de données transférées chaque mois via les réseaux de télécommunications. Ce qui fait une consomation énergétique énorme.
+      En 2019, Pornhub accueillait <b>115 millions de visite par jour</b>, ce qui correspond à 18 000 terabytes de données transféré par jour. 
+      Soit <b>6597 Petabytes</b> cette année, ce qui fait une consomation énergétique énorme.
       Et il est important de donner aux sites mais aussi aux auteurs des indices quant à la pertinence des vidéos afin de réduire son coût énérgétique.
+    
+      
     </p>
   </div>
     </div>
@@ -793,452 +796,668 @@
   </div>
 
 
-    <div class="container-fluid bg-1 text-center" id="cost">
+  <div class="container-fluid bg-1 text-center" id="cost">
 
-  </br>
-  </br>
-      <div class="col-sm-8">
-        <div id="cost_graph">
-          <script>
-            var margin = {
-              top: 40,
-              right: 40,
-              bottom: 30,
-              left: 150
-            };
-            (width = 900 - margin.left - margin.right),
-              (height = 500 - margin.top - margin.bottom);
+</br>
+</br>
+    <div class="col-sm-8">
+      <div id="cost_graph">
+        <script>
+          var margin = {
+            top: 40,
+            right: 40,
+            bottom: 30,
+            left: 150
+          };
+          (width = 900 - margin.left - margin.right),
+            (height = 500 - margin.top - margin.bottom);
 
-            // append the svg object to the body of the page
-            var svg = d3
-              .select("#cost")
-              .append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-              .append("g")
-              .attr(
-                "transform",
-                "translate(" + margin.left + "," + margin.top + ")"
-              );
+          // append the svg object to the body of the page
+          var svg = d3
+            .select("#cost")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr(
+              "transform",
+              "translate(" + margin.left + "," + margin.top + ")"
+            );
 
-            d3.json(
-              "https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/data.json",
-              function(json) {
-                var data_raw = Array.from(Object.values(json));
-                var data = [];
+          d3.json(
+            "https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/data.json",
+            function(json) {
+              var data_raw = Array.from(Object.values(json));
+              var data = [];
 
-                data_raw.map(function(d) {
-                  if (d.duration != "None") data.push(d);
+              data_raw.map(function(d) {
+                if (d.duration != "None") data.push(d);
+              });
+
+              data.map(function(d) {
+                view = d3.max(d.evolution, function(t) {
+                  return +t.views;
                 });
+                d.view = view;
+              });
 
-                data.map(function(d) {
-                  view = d3.max(d.evolution, function(t) {
-                    return +t.views;
-                  });
-                  d.view = view;
-                });
+              var x = d3
+                .scaleLinear()
+                .range([0, width])
+                .nice();
 
-                var x = d3
-                  .scaleLinear()
-                  .range([0, width])
-                  .nice();
+              var y = d3.scaleLinear().range([height, 0]);
 
-                var y = d3.scaleLinear().range([height, 0]);
+              var xAxis = d3.axisBottom(x).ticks(12);
+              var yAxis = d3.axisLeft(y).ticks((12 * height) / width);
 
-                var xAxis = d3.axisBottom(x).ticks(12);
-                var yAxis = d3.axisLeft(y).ticks((12 * height) / width);
+              var brush = d3
+                  .brush()
+                  .extent([
+                    [0, 0],
+                    [width, height]
+                  ])
+                  .on("end", brushended),
+                idleTimeout,
+                idleDelay = 350;
 
-                var brush = d3
-                    .brush()
-                    .extent([
-                      [0, 0],
-                      [width, height]
-                    ])
-                    .on("end", brushended),
-                  idleTimeout,
-                  idleDelay = 350;
+              var tooltip = d3
+                .select("#cost")
+                .append("div")
+                .style("opacity", 0)
+                .attr("class", "tooltip")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "1px")
+                .style("border-radius", "5px")
+                .style("padding", "10px");
 
-                var tooltip = d3
-                  .select("#cost")
-                  .append("div")
-                  .style("opacity", 0)
-                  .attr("class", "tooltip")
-                  .style("background-color", "white")
-                  .style("border", "solid")
-                  .style("border-width", "1px")
-                  .style("border-radius", "5px")
-                  .style("padding", "10px");
+              var mouseover = function(d) {
+                console.log(d);
+                console.log("Test");
+                tooltip.style("opacity", 1);
+              };
 
-                var mouseover = function(d) {
-                  console.log(d);
-                  console.log("Test");
-                  tooltip.style("opacity", 1);
-                };
+              var mousemove = function(d) {
+                console.log(d);
+                console.log("Test");
+                tooltip;
 
-                var mousemove = function(d) {
-                  console.log(d);
-                  console.log("Test");
-                  tooltip;
+                /*
+            .style("left", (d3.mouse(this)[0] + 90) +
+                "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+            .style("top", (d3.mouse(this)[1]) + "px")
+            */
+              };
 
-                  /*
-              .style("left", (d3.mouse(this)[0] + 90) +
-                  "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
-              .style("top", (d3.mouse(this)[1]) + "px")
-              */
-                };
+              var mouseleave = function(d) {
+                console.log(d);
+                console.log("Test");
+                tooltip
+                  .transition()
+                  .duration(200)
+                  .style("opacity", 0);
+              };
 
-                var mouseleave = function(d) {
-                  console.log(d);
-                  console.log("Test");
-                  tooltip
-                    .transition()
-                    .duration(200)
-                    .style("opacity", 0);
-                };
+              var clip = svg
+                .append("defs")
+                .append("svg:clipPath")
+                .attr("id", "clip")
+                .append("svg:rect")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("x", 0)
+                .attr("y", 0);
 
-                var clip = svg
-                  .append("defs")
-                  .append("svg:clipPath")
-                  .attr("id", "clip")
-                  .append("svg:rect")
-                  .attr("width", width)
-                  .attr("height", height)
-                  .attr("x", 0)
-                  .attr("y", 0);
+              var xExtent = d3.extent(data, function(d) {
+                return d.duration;
+              });
 
-                var xExtent = d3.extent(data, function(d) {
+      var yExtent = d3.extent(data, function(d) {
+                return d.view;
+              });
+
+
+              x.domain(
+                d3.extent(data, function(d) {
                   return d.duration;
-                });
-
-				var yExtent = d3.extent(data, function(d) {
+                })
+              ).nice();
+              y.domain(
+                d3.extent(data, function(d) {
                   return d.view;
-                });
+                })
+              ).nice();
 
+              var scatter = svg
+                .append("g")
+                .attr("id", "scatterplot")
+                .attr("clip-path", "url(#clip)");
 
-                x.domain(
-                  d3.extent(data, function(d) {
-                    return d.duration;
-                  })
-                ).nice();
-                y.domain(
-                  d3.extent(data, function(d) {
-                    return d.view;
-                  })
-                ).nice();
+              scatter
+                .selectAll(".dot")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("class", "dot")
+                .attr("r", 4)
+                .attr("cx", function(d) {
+                  return x(d.duration);
+                })
+                .attr("cy", function(d) {
+                  return y(d.view);
+                })
+                .attr("opacity", 0.5)
+                .style("fill", "#4292c6")
+                .style("pointer-events", "none")
+                .on("mousemove", mousemove)
+                .on("mouseout", mouseleave)
+                .on("mouseover", mouseover);
 
-                var scatter = svg
-                  .append("g")
-                  .attr("id", "scatterplot")
-                  .attr("clip-path", "url(#clip)");
+              // x axis
+              svg
+                .append("g")
+                .attr("class", "x axis")
+                .attr("id", "axis--x")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
 
+              svg
+                .append("text")
+                .style("text-anchor", "end")
+                .attr("x", width)
+                .attr("y", height - 8)
+                .text("Durée");
+
+              // y axis
+              svg
+                .append("g")
+                .attr("class", "y axis")
+                .attr("id", "axis--y")
+                .call(yAxis);
+
+              svg
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", "1em")
+                .style("text-anchor", "end")
+                .text("Vues");
+
+              scatter
+                .append("g")
+                .attr("class", "brush")
+                .call(brush);
+
+              function brushended() {
+                var s = d3.event.selection;
+                if (!s) {
+                  if (!idleTimeout)
+                    return (idleTimeout = setTimeout(idled, idleDelay));
+                  x.domain(
+                    d3.extent(data, function(d) {
+                      return d.duration;
+                    })
+                  ).nice();
+                  y.domain(
+                    d3.extent(data, function(d) {
+                      return d.view;
+                    })
+                  ).nice();
+                } else {
+                  x.domain([s[0][0], s[1][0]].map(x.invert, x));
+                  y.domain([s[1][1], s[0][1]].map(y.invert, y));
+                  scatter.select(".brush").call(brush.move, null);
+                }
+                zoom();
+              }
+
+              function idled() {
+                idleTimeout = null;
+              }
+
+              function zoom() {
+                var t = scatter.transition().duration(750);
+                svg
+                  .select("#axis--x")
+                  .transition(t)
+                  .call(xAxis);
+                svg
+                  .select("#axis--y")
+                  .transition(t)
+                  .call(yAxis);
                 scatter
-                  .selectAll(".dot")
-                  .data(data)
-                  .enter()
-                  .append("circle")
-                  .attr("class", "dot")
-                  .attr("r", 4)
+                  .selectAll("circle")
+                  .transition(t)
                   .attr("cx", function(d) {
                     return x(d.duration);
                   })
                   .attr("cy", function(d) {
                     return y(d.view);
-                  })
-                  .attr("opacity", 0.5)
-                  .style("fill", "#4292c6")
-                  .style("pointer-events", "none")
-                  .on("mousemove", mousemove)
-                  .on("mouseout", mouseleave)
-                  .on("mouseover", mouseover);
-
-                // x axis
-                svg
-                  .append("g")
-                  .attr("class", "x axis")
-                  .attr("id", "axis--x")
-                  .attr("transform", "translate(0," + height + ")")
-                  .call(xAxis);
-
-                svg
-                  .append("text")
-                  .style("text-anchor", "end")
-                  .attr("x", width)
-                  .attr("y", height - 8)
-                  .text("Durée");
-
-                // y axis
-                svg
-                  .append("g")
-                  .attr("class", "y axis")
-                  .attr("id", "axis--y")
-                  .call(yAxis);
-
-                svg
-                  .append("text")
-                  .attr("transform", "rotate(-90)")
-                  .attr("y", 6)
-                  .attr("dy", "1em")
-                  .style("text-anchor", "end")
-                  .text("Vues");
-
-                scatter
-                  .append("g")
-                  .attr("class", "brush")
-                  .call(brush);
-
-                function brushended() {
-                  var s = d3.event.selection;
-                  if (!s) {
-                    if (!idleTimeout)
-                      return (idleTimeout = setTimeout(idled, idleDelay));
-                    x.domain(
-                      d3.extent(data, function(d) {
-                        return d.duration;
-                      })
-                    ).nice();
-                    y.domain(
-                      d3.extent(data, function(d) {
-                        return d.view;
-                      })
-                    ).nice();
-                  } else {
-                    x.domain([s[0][0], s[1][0]].map(x.invert, x));
-                    y.domain([s[1][1], s[0][1]].map(y.invert, y));
-                    scatter.select(".brush").call(brush.move, null);
-                  }
-                  zoom();
-                }
-
-                function idled() {
-                  idleTimeout = null;
-                }
-
-                function zoom() {
-                  var t = scatter.transition().duration(750);
-                  svg
-                    .select("#axis--x")
-                    .transition(t)
-                    .call(xAxis);
-                  svg
-                    .select("#axis--y")
-                    .transition(t)
-                    .call(yAxis);
-                  scatter
-                    .selectAll("circle")
-                    .transition(t)
-                    .attr("cx", function(d) {
-                      return x(d.duration);
-                    })
-                    .attr("cy", function(d) {
-                      return y(d.view);
-                    });
-                }
-                svg
-                  .append("text")
-                  .attr("x", width / 2)
-                  .attr("y", 15 - margin.top / 2)
-                  .attr("text-anchor", "middle")
-                  .style("font-size", "16px")
-                  .style("text-decoration", "underline")
-                  .text("Mapping des vidéos par rapport à leurs nombres de vues et leurs durées.");
+                  });
               }
+              svg
+                .append("text")
+                .attr("x", width / 2)
+                .attr("y", 15 - margin.top / 2)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("text-decoration", "underline")
+                .text("Mapping des vidéos par rapport à leurs nombres de vues et leurs durées.");
+            }
 
-            );
+          );
 
-		  
-        </script>
-        </div>
-      </div>
-      <div class="col-sm-4">
+    // ---------------------------------------------------------------------------------------------
+    // SCRIPT CATEGORIES
+    var display_cats = function(begin,finish,nb_display){
+    d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
 
-      </br>
-      </br>
-        <p>
-          Ce graphe présente les vidéos collectées par rapport à leurs durées en
-          secondes et leurs nombres de vues. Ainsi, les vidéos les plus longues
-          représentent un enjeu en terme de stockage dans les datacenters et les
-          vidéos les plus vues un enjeu en trafic. On peut voir que la majorité
-          des vidéos qui sont stockées dans les datacenters sont très peu vues,
-          il serait intéressant de procéder à un "nettoyage" quand une vidéo est
-          assez longue et ne rencontre pas une certaine popularité, en vu de
-          réduire les consommations énergétiques.
+    d3.select("#svg_cats").remove();
+    var diff  = [];
+    var cats = [];
 
-          On peut zoomer le graphe en sélectionnant une zone.
-          La durée est exprimée en secondes.
-        </p>
+    dates = Object.keys(data)
+    Object.keys(data[dates[0]]).forEach( cat => cats.push(cat))
+
+
+    var svg = d3.select("#category_graph").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("id", "svg_cats")
+
+
+    svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", 35 - margin.top / 2)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("text-decoration", "underline")
+    .text("Parts des catégories les plus populaires dans la consommation globale")
+
+    var data2 = dates.map(
+      function(key) {
+      var dict = {};
+      dict["date"] = key
+      Object.keys(data[key]).forEach(
+        function(key2) {
+        dict[key2] = data[key][key2]
+        }
+      )
+      return dict;
+      }
+    )
+
+
+    var total = 0;
+    if(begin == false || finish == false || begin == "first" || finish == "last"){
+      diff = cats.map(function(cat){
+      var dict = { id: cat,
+        value : data2[data2.length - 1][cat] - data2[0][cat]}
+      total += dict.value
+      return dict;
+      })
+        } else {
+      diff = cats.map(function(cat){
+      var dict = { id: cat,
+        value : data[finish][cat] - data[begin][cat]}
+      total += dict.value
+      return dict;
+      })
+    }
+
+    var best = [];
+    var minVal = 1000000000;
+    for(let i = 0; i < cats.length; i++){
+      if (best.length < nb_display){
+      best.push(i)
+
+      if (diff[i]["value"] < minVal){
+        minVal = diff[i]["value"]
+      }
+      } else {
+      if (diff[i]["value"] > minVal){
+        for(let j = 0; j < nb_display; j++){
+        if (diff[best[j]].value == minVal){
+          best[j] = i
+          break;
+        }
+        }
+        minVal = Number.MAX_VALUE;
+        for(let j = 0; j < nb_display; j++){
+        if (diff[best[j]]["value"] < minVal){
+          minVal = diff[best[j]]["value"]
+        }
+        }
+      }
+      }
+    }
+
+
+    var to_display = diff.filter(function(d,i){
+      for(let j = 0; j < cats.length; j++){
+      if (i == best[j]){
+        return true;
+      }
+      }
+      return false;
+    });
+
+    maxima = 0
+
+    to_display.forEach(function(d){
+      if (d["value"] > maxima){
+      maxima = d["value"]
+      }
+    })
+
+    function keysrt(key,desc) {
+      return function(a,b){
+       return desc ? ~~(a[key] > b[key]) : ~~(a[key] < b[key]);
+      }
+    }
+    to_display.sort(keysrt("value"))
+
+    var width_ = d3.scaleLinear()
+    .domain([0,maxima])
+    .range([width - 150 , 0.05 * width]);
+
+    var y = d3.scaleLinear()
+    .domain([0,parseInt(nb_display) + 1])
+    .range([height * 0.1, height]);
+
+    var xperCent = d3.scaleLinear()
+    .domain([0,Math.floor(1 + to_display[0].value/total * 100)])
+    .range([150 , width - 20]);
+
+
+    svg.selectAll("rect").data(to_display).enter()
+        .append("rect")
+        .attr("width", function(d) {
+      return width - (150 + width_(d["value"]));
+      }).attr("height", (height * 0.8) / (parseInt(nb_display) + 1))
+        .attr("x", function(d) { return  150; })
+        .attr("y",  function(d,i) { return y(i); })
+        .style("fill", function(d){ return "steelBlue"})
+
+    d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/cat_userfriendly.json", function(dataAno){
+
+      svg.selectAll("text25").data(to_display).enter()
+      .append("text")
+      .text(function(d){
+      return dataAno[d.id]
+      })
+      .attr("y", function(d,i){return y(i) + ((height * 0.8) / (nb_display + 1))/2})
+      .attr("x", 10)
+      .attr("font-size", 12)
+      .attr("font-family", "monospace");
+
+    })
+
+    var tab = []
+    for(let i = 0; i < 1 + to_display[0].value/total * 100; i++){
+      tab.push(i)
+    }
+
+    svg.selectAll("text2").data(tab).enter()
+    .append("text")
+    .text(function(d){
+      return d + "%"
+    })
+    .attr("y", height *0.99)
+    .attr("x", function(d){return xperCent(d)})
+    .attr("font-size", 12)
+    .attr("font-family", "monospace");
+
+      });
+    }
+
+    d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
+
+      keys = Object.keys(data)
+      keys.forEach( function(key){
+
+      var node1 = document.createElement("option");
+      var node2 = document.createElement("option");
+
+      var textnode1 = document.createTextNode(key);
+      var textnode2 = document.createTextNode(key);
+      // Create a text node
+          node1.appendChild(textnode1);
+      node2.appendChild(textnode2);
+
+          document.getElementById("d3-debut").appendChild(node1)
+
+      document.getElementById("d3-fin").appendChild(node2)
+      })
+
+    })
+
+    d3.select("#select-section").on("change", function(d) {
+      var begin = d3.select("#d3-debut").node().value;
+      var finish = d3.select("#d3-fin").node().value;
+      var nb_cats = d3.select("#nb_cats").node().value;
+
+      display_cats(begin,finish,nb_cats)
+    })
+
+    display_cats(false,false,d3.select("#nb_cats").node().value)
+
+    //------------------------------- FIN CATEGORIES --------------------------------------------------
+      </script>
       </div>
     </div>
+    <div class="col-sm-4">
 
-    <div class="container-fluid bg-1 text-center" id="visu">
-
-  </br>
-  </br>
-      <div class="col-sm-8">
-        <div id="visu_graph">
-        <script>
-          var marginD = {top: 80, right: 180, bottom: 150, left: 180},
-          widthD = 1000 - marginD.left - marginD.right,
-          heightD = 500 - marginD.top - marginD.bottom;
-
-         var svg = d3.select("body").append("svg")
-           .attr("width", widthD + marginD.left + marginD.right)
-           .attr("height", heightD + marginD.top + marginD.bottom)
-            .append("g")
-            .attr("transform", "translate(" + marginD.left + "," + marginD.top + ")");
-
-         d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/costCat2.json", function(error, data){
-
-
-               //console.log(data);
-
-         var y = d3.scale.sqrt()
-           .domain([0, d3.max(data, function(d){
-             return d.cost;
-           })])
-           .range([heightD,0]);
-
-         var x = d3.scale.ordinal()
-           .domain(data.map(function(d){ return d.id;}))
-           .rangeBands([0,widthD]);
-
-        var xAxis = d3.svg.axis()
-           .scale(x)
-           .orient("bottom");
-
-        var yAxis = d3.svg.axis()
-            .scale(y)
-            .orient("left");
-
-        svg.append("g")
-           .attr("class", "x axis")
-           .attr("transform", "translate(0," + heightD + ")")
-           .call(xAxis)
-           .selectAll("text")
-           .style("font-size", "8px")
-           .style("text-anchor", "end")
-           .attr("dx", "-.8em")
-           .attr("dy", "-.55em")
-           .attr("transform", "rotate(-90)" );
-
-
-        svg.append("g")
-           .attr("class", "y axis")
-           .call(yAxis);
-
-
-       svg.selectAll("rectangle")
-          .data(data)
-          .enter()
-          .append("rect")
-          .attr("class","rectangle")
-          .attr("width", widthD/100)
-          .attr("height", function(d){
-            return heightD - y(d.cost);
-          })
-          .attr("x", function(d, i){
-            return (widthD / data.length) * i ;
-          })
-          .attr("y", function(d){
-            return y(d.cost);
-          })
-
-      svg.append("text")
-         .attr("x", widthD / 2)
-         .attr("y", 0 - marginD.top / 2)
-         .attr("text-anchor", "middle")
-         .style("font-size", "16px")
-         .style("text-decoration", "underline")
-         .text("Consommation énergétique par catégorie des vidéos supprimées");
-
-
-       });
-
-
-
-   </script>
-
-        </div>
-      </div>
-      <div class="col-sm-4">
-
-      </br>
-      </br>
-        <p>
-          Ce graphe sert à visualiser la consommation énergétique des différentes
-          catégories par rapport aux vidéos supprimées.
-          On a remarqué que pas mal de vidéos sont publiées pour être supprimées par
-          la suite, cela peut être considérer comme du gâchis d'où l'objet de
-          graphe qui met en exergue le gaspillage d'énergie
-        </p>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="container-fluid bg-4 text-center">
+    </br>
+    </br>
       <p>
-        AdultDataProject - Pour plus d'info : <a style="color:cornsilk;" href="https://github.com/Origonz/AdultDataProject/wiki">Wiki</a>
-      </p>
-    </footer>
+        Ce graphe présente les vidéos collectées par rapport à leurs durées en
+        secondes et leurs nombres de vues. Ainsi, les vidéos les plus longues
+        représentent un enjeu en terme de stockage dans les datacenters et les
+        vidéos les plus vues un enjeu en trafic. On peut voir que la majorité
+        des vidéos qui sont stockées dans les datacenters sont très peu vues,
+        il serait intéressant de procéder à un "nettoyage" quand une vidéo est
+        assez longue et ne rencontre pas une certaine popularité, en vu de
+        réduire les consommations énergétiques.
 
-    <!-- Modal -->
-    <div id="myModal" class="modal">
+        On peut zoomer le graphe en sélectionnant une zone.
+        La durée est exprimée en secondes.
+      </p>
+    </div>
+  </div>
+
+  <div class="container-fluid bg-1 text-center" id="visu">
+
+</br>
+</br>
+    <div class="col-sm-8">
+      <div id="visu_graph">
+        <script>
+
+           var canvas = d3.select("#visu_graph").append("svg")
+             .attr("width", 900)
+             .attr("height", 700)
+             .append("g")
+               .attr("transform","translate(50,0)");
+
+
+
+
+           const widthD = 800//document.body.clientWidth;
+           const heightD =600// document.body.clientHeight;
+           const marginD = { top: 0, right: 70, bottom: 0, left: 40};
+           const innerWidth = widthD - marginD.left - marginD.right;
+           const innerHeight = heightD - marginD.top - marginD.bottom;
+
+           var tree=d3.layout.tree()
+             .size([innerHeight, innerWidth])
+             .separation(function(a, b) { return a.parent === b.parent ? 10 : 15; });
+
+
+         var zoom = d3.behavior.zoom()
+             .scaleExtent([0.50, 10])
+             .on('zoom', redraw);
+
+           d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/dendogram.json",function(data){
+             //console.log(data)
+             var nodes=tree.nodes(data);
+             //console.log(nodes)
+             var links=tree.links(nodes);
+             //console.log(links);
+             var node=canvas.selectAll(".node")
+               .data(nodes)
+               .enter()
+               .append("g")
+                 .attr("class","node")
+                 .attr("transform",function(d){return "translate(" + d.y + "," + d.x+")";})
+               .on("mouseover", function(d, i) {
+               d3.select(this).style("fill", "red");
+                 fade(d.id, 0.2);
+             })
+             .on("mouseout", function(d, i) {
+               d3.select(this).style("fill", "black");
+               fadeOut()
+             })
+             .call(zoom)
+
+             node.append("circle")
+               .attr("r",1.5)
+               .attr("fill","darkblue")
+
+             node.append("text")
+               .attr('dy', '0.20em')
+               .attr('text-anchor', d =>d.children ? 'middle' : 'start')
+               .attr('font-size', d => 2.1 - d.depth + 'em')
+               .text(function(d){return "     "+d.id +" " + d.view ;})
+
+
+             var diagonal=d3.svg.diagonal()
+               .projection(function(d){return [d.y,d.x]; })
+
+             canvas.selectAll(".links")
+               .data(links)
+               .enter()
+               .append("path")
+               .attr("class","link")
+               .attr("fill","none")
+               .attr("stroke","#ADADAD")
+               .attr("d",diagonal)
+               .call(zoom);
+
+             var opacity = d3.scale.sqrt()
+                  .domain([d3.min(data, function (d) { return d.depth; }),d3.max(data, function (d) { return d.depth; })])
+                  .range([1, .5]);
+
+           })
+
+           function redraw() {
+           canvas.attr('transform', 'translate(' + d3.event.translate + ')' +
+               ' scale(' + d3.event.scale + ')');
+           }
+
+
+
+           function fade(c, opacity) {
+               canvas.selectAll("circle")
+                  .filter(function (d) {
+                  return d.id != c;
+                  })
+                  .transition()
+                  .style("opacity", opacity);
+
+           }
+
+           function fadeOut() {
+                 canvas.selectAll("circle")
+                    .transition()
+                    .style("opacity", 1);
+           }
+
+         </script>
+
+      </div>
+    </div>
+    <div class="col-sm-4">
+
+    </br>
+    </br>
+      <p>
+        Ce dendogramme permet de visualiser le nombre de vues par ordre décroissant
+        selon les catégories,les titres et les tags.
+        Il permet aux vidéastes d'identifier les catégories qui font le plus de vues de même
+        que les tags et les mots clés dans les titres de vidéos ainsi cela permet
+        d'éviter le stockage des vidéos inutilement et de consommer de l'énergie.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="container-fluid bg-4 text-center">
+    <p>
+      AdultDataProject - Pour plus d'info : <a style="color:cornsilk;" href="https://github.com/Origonz/AdultDataProject/wiki">Wiki</a>
+    </p>
+  </footer>
+
+  <!-- Modal -->
+  <div id="myModal" class="modal">
 
 <!-- Modal content -->
 <div class="modal-content text-center">
-  <span class="close">&times;</span>
-  <p>Vous utilisez un autre navigateur que Firefox, il est possible qu'il y ai des fonctionalités non disponibles ou erronées.</p>
+<span class="close">&times;</span>
+<p>Vous utilisez un autre navigateur que Firefox, il est possible qu'il y ai des fonctionalités non disponibles ou erronées.</p>
 </div>
 
 </div>
-    <style>
-      /* The Modal (background) */
+  <style>
+    /* The Modal (background) */
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+display: none; /* Hidden by default */
+position: fixed; /* Stay in place */
+z-index: 1; /* Sit on top */
+left: 0;
+top: 0;
+width: 100%; /* Full width */
+height: 100%; /* Full height */
+overflow: auto; /* Enable scroll if needed */
+background-color: rgb(0,0,0); /* Fallback color */
+background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+background-color: #fefefe;
+margin: 15% auto; /* 15% from the top and centered */
+padding: 20px;
+border: 1px solid #888;
+width: 80%; /* Could be more or less, depending on screen size */
 }
 
 /* The Close Button */
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+color: #aaa;
+float: right;
+font-size: 28px;
+font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-    </style>
-    <script>
-      modal = document.getElementById("myModal")
-      if(typeof InstallTrigger == 'undefined'){
-        modal.style.display = "block";
+color: black;
+text-decoration: none;
+cursor: pointer;
+} 
+  </style>
+  <script>
+    modal = document.getElementById("myModal")
+    if(typeof InstallTrigger == 'undefined'){
+      modal.style.display = "block";
+    }
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
       }
-      window.onclick = function(event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      }
-    </script>
-  </body>
+    }
+  </script>
+</body>
 </html>
