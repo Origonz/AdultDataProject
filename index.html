@@ -75,29 +75,25 @@
       .navbar-nav li a:hover {
         color: #1abc9c !important;
       }
-      path {
-        fill: none;
-        stroke: #56c2a3;
-      }
 
-      text {
-        text-shadow:
-        -1px -1px 3px white,
-        -1px  1px 3px white,
-        1px -1px 3px white,
-        1px  1px 3px white;
-        pointer-events: none;
-        font-family: 'Playfair Display', serif;
-      }
-      .node {
-			     fill: black;
-			     stroke-width: 6;
-  		     cursor:pointer;
-		   }
-    .circle{
-      opacity:1;
-      fill:darkblue;
-    }
+
+      .rectangle {
+  			fill: steelblue;
+  		}
+  		.rectangle:hover {
+  			fill: orange;
+  		}
+      .axis {
+    		font: 10px sans-serif;
+  		}
+
+  	.axis path,
+  	.axis line {
+    	fill: none;
+    	stroke: #000;
+    	shape-rendering: crispEdges;
+  	}
+
     </style>
   </head>
 
@@ -536,6 +532,205 @@
 			<input type="number" id="nb_cats" name="nombre"
 			   min="1" max="99" value="15">
 		</div>
+		
+		<script>
+			// ---------------------------------------------------------------------------------------------
+		  // SCRIPT CATEGORIES
+		  var display_cats = function(begin,finish,nb_display){
+			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
+
+			d3.select("#svg_cats").remove();
+			var diff  = [];
+			var cats = [];
+
+			dates = Object.keys(data)
+			Object.keys(data[dates[0]]).forEach( cat => cats.push(cat))
+
+
+			var svg = d3.select("#category_graph").append("svg")
+			.attr("width", width)
+			.attr("height", height)
+			.attr("id", "svg_cats")
+
+
+			svg.append("text")
+                  .attr("x", width / 2)
+                  .attr("y", 35 - margin.top / 2)
+                  .attr("text-anchor", "middle")
+                  .style("font-size", "16px")
+                  .style("text-decoration", "underline")
+			.text("Parts des catégories les plus populaires dans la consommation globale")
+
+			var data2 = dates.map(
+			  function(key) {
+				var dict = {};
+				dict["date"] = key
+				Object.keys(data[key]).forEach(
+				  function(key2) {
+					dict[key2] = data[key][key2]
+				  }
+				)
+				return dict;
+			  }
+			)
+
+
+			var total = 0;
+			if(begin == false || finish == false || begin == "first" || finish == "last"){
+			  diff = cats.map(function(cat){
+				var dict = { id: cat,
+				  value : data2[data2.length - 1][cat] - data2[0][cat]}
+				total += dict.value
+				return dict;
+			  })
+					} else {
+			  diff = cats.map(function(cat){
+				var dict = { id: cat,
+				  value : data[finish][cat] - data[begin][cat]}
+				total += dict.value
+				return dict;
+			  })
+			}
+
+			var best = [];
+			var minVal = 1000000000;
+			for(let i = 0; i < cats.length; i++){
+			  if (best.length < nb_display){
+				best.push(i)
+
+				if (diff[i]["value"] < minVal){
+				  minVal = diff[i]["value"]
+				}
+			  } else {
+				if (diff[i]["value"] > minVal){
+				  for(let j = 0; j < nb_display; j++){
+					if (diff[best[j]].value == minVal){
+					  best[j] = i
+					  break;
+					}
+				  }
+				  minVal = Number.MAX_VALUE;
+				  for(let j = 0; j < nb_display; j++){
+					if (diff[best[j]]["value"] < minVal){
+					  minVal = diff[best[j]]["value"]
+					}
+				  }
+				}
+			  }
+			}
+
+
+			var to_display = diff.filter(function(d,i){
+			  for(let j = 0; j < cats.length; j++){
+				if (i == best[j]){
+				  return true;
+				}
+			  }
+			  return false;
+			});
+
+			maxima = 0
+
+			to_display.forEach(function(d){
+			  if (d["value"] > maxima){
+				maxima = d["value"]
+			  }
+			})
+
+			function keysrt(key,desc) {
+			  return function(a,b){
+			   return desc ? ~~(a[key] > b[key]) : ~~(a[key] < b[key]);
+			  }
+			}
+			to_display.sort(keysrt("value"))
+
+			var width_ = d3.scaleLinear()
+			.domain([0,maxima])
+			.range([width - 150 , 0.05 * width]);
+
+			var y = d3.scaleLinear()
+			.domain([0,parseInt(nb_display) + 1])
+			.range([height * 0.1, height]);
+
+			var xperCent = d3.scaleLinear()
+			.domain([0,Math.floor(1 + to_display[0].value/total * 100)])
+			.range([150 , width - 20]);
+
+
+			svg.selectAll("rect").data(to_display).enter()
+					.append("rect")
+					.attr("width", function(d) {
+				return width - (150 + width_(d["value"]));
+			  }).attr("height", (height * 0.8) / (parseInt(nb_display) + 1))
+					.attr("x", function(d) { return  150; })
+					.attr("y",  function(d,i) { return y(i); })
+					.style("fill", function(d){ return "steelBlue"})
+
+			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/cat_userfriendly.json", function(dataAno){
+
+			  svg.selectAll("text25").data(to_display).enter()
+			  .append("text")
+			  .text(function(d){
+				return dataAno[d.id]
+			  })
+			  .attr("y", function(d,i){return y(i) + ((height * 0.8) / (nb_display + 1))/2})
+			  .attr("x", 10)
+			  .attr("font-size", 12)
+			  .attr("font-family", "monospace");
+
+			})
+
+			var tab = []
+			for(let i = 0; i < 1 + to_display[0].value/total * 100; i++){
+			  tab.push(i)
+			}
+
+			svg.selectAll("text2").data(tab).enter()
+			.append("text")
+			.text(function(d){
+			  return d + "%"
+			})
+			.attr("y", height *0.99)
+			.attr("x", function(d){return xperCent(d)})
+			.attr("font-size", 12)
+			.attr("font-family", "monospace");
+
+		    });
+		  }
+
+		  d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
+
+			  keys = Object.keys(data)
+			  keys.forEach( function(key){
+
+				var node1 = document.createElement("option");
+				var node2 = document.createElement("option");
+
+				var textnode1 = document.createTextNode(key);
+				var textnode2 = document.createTextNode(key);
+				// Create a text node
+						node1.appendChild(textnode1);
+				node2.appendChild(textnode2);
+
+						document.getElementById("d3-debut").appendChild(node1)
+
+				document.getElementById("d3-fin").appendChild(node2)
+			  })
+
+		  })
+
+		  d3.select("#select-section").on("change", function(d) {
+			  var begin = d3.select("#d3-debut").node().value;
+			  var finish = d3.select("#d3-fin").node().value;
+			  var nb_cats = d3.select("#nb_cats").node().value;
+
+			  display_cats(begin,finish,nb_cats)
+		  })
+
+		  display_cats(false,false,d3.select("#nb_cats").node().value)
+
+		  //------------------------------- FIN CATEGORIES --------------------------------------------------
+		</script>
 
 	  </div>
     </div>
@@ -552,7 +747,7 @@
       </p>
     </div>
   </div>
-    
+
 
     <div class="container-fluid bg-1 text-center" id="cost">
 
@@ -806,202 +1001,7 @@
 
             );
 
-		  // ---------------------------------------------------------------------------------------------
-		  // SCRIPT CATEGORIES
-		  var display_cats = function(begin,finish,nb_display){
-			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
-
-			d3.select("#svg_cats").remove();
-			var diff  = [];
-			var cats = [];
-
-			dates = Object.keys(data)
-			Object.keys(data[dates[0]]).forEach( cat => cats.push(cat))
-
-
-			var svg = d3.select("#category_graph").append("svg")
-			.attr("width", width)
-			.attr("height", height)
-			.attr("id", "svg_cats")
-
-
-			svg.append("text")
-                  .attr("x", width / 2)
-                  .attr("y", 35 - margin.top / 2)
-                  .attr("text-anchor", "middle")
-                  .style("font-size", "16px")
-                  .style("text-decoration", "underline")
-			.text("Parts des catégories les plus populaires dans la consommation globale")
-
-			var data2 = dates.map(
-			  function(key) {
-				var dict = {};
-				dict["date"] = key
-				Object.keys(data[key]).forEach(
-				  function(key2) {
-					dict[key2] = data[key][key2]
-				  }
-				)
-				return dict;
-			  }
-			)
-
-
-			var total = 0;
-			if(begin == false || finish == false || begin == "first" || finish == "last"){
-			  diff = cats.map(function(cat){
-				var dict = { id: cat,
-				  value : data2[data2.length - 1][cat] - data2[0][cat]}
-				total += dict.value
-				return dict;
-			  })
-					} else {
-			  diff = cats.map(function(cat){
-				var dict = { id: cat,
-				  value : data[finish][cat] - data[begin][cat]}
-				total += dict.value
-				return dict;
-			  })
-			}
-
-			var best = [];
-			var minVal = 1000000000;
-			for(let i = 0; i < cats.length; i++){
-			  if (best.length < nb_display){
-				best.push(i)
-
-				if (diff[i]["value"] < minVal){
-				  minVal = diff[i]["value"]
-				}
-			  } else {
-				if (diff[i]["value"] > minVal){
-				  for(let j = 0; j < nb_display; j++){
-					if (diff[best[j]].value == minVal){
-					  best[j] = i
-					  break;
-					}
-				  }
-				  minVal = Number.MAX_VALUE;
-				  for(let j = 0; j < nb_display; j++){
-					if (diff[best[j]]["value"] < minVal){
-					  minVal = diff[best[j]]["value"]
-					}
-				  }
-				}
-			  }
-			}
-
-
-			var to_display = diff.filter(function(d,i){
-			  for(let j = 0; j < cats.length; j++){
-				if (i == best[j]){
-				  return true;
-				}
-			  }
-			  return false;
-			});
-
-			maxima = 0
-
-			to_display.forEach(function(d){
-			  if (d["value"] > maxima){
-				maxima = d["value"]
-			  }
-			})
-
-			function keysrt(key,desc) {
-			  return function(a,b){
-			   return desc ? ~~(a[key] > b[key]) : ~~(a[key] < b[key]);
-			  }
-			}
-			to_display.sort(keysrt("value"))
-
-			var width_ = d3.scaleLinear()
-			.domain([0,maxima])
-			.range([width - 150 , 0.05 * width]);
-
-			var y = d3.scaleLinear()
-			.domain([0,parseInt(nb_display) + 1])
-			.range([height * 0.1, height]);
-
-			var xperCent = d3.scaleLinear()
-			.domain([0,Math.floor(1 + to_display[0].value/total * 100)])
-			.range([150 , width - 20]);
-
-
-			svg.selectAll("rect").data(to_display).enter()
-					.append("rect")
-					.attr("width", function(d) {
-				return width - (150 + width_(d["value"]));
-			  }).attr("height", (height * 0.8) / (parseInt(nb_display) + 1))
-					.attr("x", function(d) { return  150; })
-					.attr("y",  function(d,i) { return y(i); })
-					.style("fill", function(d){ return "steelBlue"})
-
-			d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/cat_userfriendly.json", function(dataAno){
-
-			  svg.selectAll("text25").data(to_display).enter()
-			  .append("text")
-			  .text(function(d){
-				return dataAno[d.id]
-			  })
-			  .attr("y", function(d,i){return y(i) + ((height * 0.8) / (nb_display + 1))/2})
-			  .attr("x", 10)
-			  .attr("font-size", 12)
-			  .attr("font-family", "monospace");
-
-			})
-
-			var tab = []
-			for(let i = 0; i < 1 + to_display[0].value/total * 100; i++){
-			  tab.push(i)
-			}
-
-			svg.selectAll("text2").data(tab).enter()
-			.append("text")
-			.text(function(d){
-			  return d + "%"
-			})
-			.attr("y", height *0.99)
-			.attr("x", function(d){return xperCent(d)})
-			.attr("font-size", 12)
-			.attr("font-family", "monospace");
-
-		    });
-		  }
-
-		  d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/category.json", function(data){
-
-			  keys = Object.keys(data)
-			  keys.forEach( function(key){
-
-				var node1 = document.createElement("option");
-				var node2 = document.createElement("option");
-
-				var textnode1 = document.createTextNode(key);
-				var textnode2 = document.createTextNode(key);
-				// Create a text node
-						node1.appendChild(textnode1);
-				node2.appendChild(textnode2);
-
-						document.getElementById("d3-debut").appendChild(node1)
-
-				document.getElementById("d3-fin").appendChild(node2)
-			  })
-
-		  })
-
-		  d3.select("#select-section").on("change", function(d) {
-			  var begin = d3.select("#d3-debut").node().value;
-			  var finish = d3.select("#d3-fin").node().value;
-			  var nb_cats = d3.select("#nb_cats").node().value;
-
-			  display_cats(begin,finish,nb_cats)
-		  })
-
-		  display_cats(false,false,d3.select("#nb_cats").node().value)
-
-		  //------------------------------- FIN CATEGORIES --------------------------------------------------
+		  
         </script>
         </div>
       </div>
@@ -1031,108 +1031,87 @@
   </br>
       <div class="col-sm-8">
         <div id="visu_graph">
-          <script>
+        <script>
+          var marginD = {top: 80, right: 180, bottom: 150, left: 180},
+          widthD = 1000 - marginD.left - marginD.right,
+          heightD = 500 - marginD.top - marginD.bottom;
 
-             var canvas = d3.select("#visu_graph").append("svg")
-               .attr("width", 900)
-               .attr("height", 700)
-               .append("g")
-                 .attr("transform","translate(50,0)");
+         var svg = d3.select("body").append("svg")
+           .attr("width", widthD + marginD.left + marginD.right)
+           .attr("height", heightD + marginD.top + marginD.bottom)
+            .append("g")
+            .attr("transform", "translate(" + marginD.left + "," + marginD.top + ")");
 
-
-
-
-             const widthD = 800//document.body.clientWidth;
-             const heightD =600// document.body.clientHeight;
-             const marginD = { top: 0, right: 70, bottom: 0, left: 40};
-             const innerWidth = widthD - marginD.left - marginD.right;
-             const innerHeight = heightD - marginD.top - marginD.bottom;
-
-             var tree=d3.layout.tree()
-               .size([innerHeight, innerWidth])
-               .separation(function(a, b) { return a.parent === b.parent ? 10 : 15; });
+         d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/costCat2.json", function(error, data){
 
 
-           var zoom = d3.behavior.zoom()
-               .scaleExtent([0.50, 10])
-               .on('zoom', redraw);
+               //console.log(data);
 
-             d3.json("https://raw.githubusercontent.com/Origonz/AdultDataProject/master/data/dendogram.json",function(data){
-               //console.log(data)
-               var nodes=tree.nodes(data);
-               //console.log(nodes)
-               var links=tree.links(nodes);
-               //console.log(links);
-               var node=canvas.selectAll(".node")
-                 .data(nodes)
-                 .enter()
-                 .append("g")
-                   .attr("class","node")
-                   .attr("transform",function(d){return "translate(" + d.y + "," + d.x+")";})
-                 .on("mouseover", function(d, i) {
-                 d3.select(this).style("fill", "red");
-                   fade(d.id, 0.2);
-               })
-               .on("mouseout", function(d, i) {
-                 d3.select(this).style("fill", "black");
-                 fadeOut()
-               })
-               .call(zoom)
+         var y = d3.scale.sqrt()
+           .domain([0, d3.max(data, function(d){
+             return d.cost;
+           })])
+           .range([heightD,0]);
 
-               node.append("circle")
-                 .attr("r",1.5)
-                 .attr("fill","darkblue")
+         var x = d3.scale.ordinal()
+           .domain(data.map(function(d){ return d.id;}))
+           .rangeBands([0,widthD]);
 
-               node.append("text")
-                 .attr('dy', '0.20em')
-                 .attr('text-anchor', d =>d.children ? 'middle' : 'start')
-                 .attr('font-size', d => 2.1 - d.depth + 'em')
-                 .text(function(d){return "     "+d.id +" " + d.view ;})
+        var xAxis = d3.svg.axis()
+           .scale(x)
+           .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        svg.append("g")
+           .attr("class", "x axis")
+           .attr("transform", "translate(0," + heightD + ")")
+           .call(xAxis)
+           .selectAll("text")
+           .style("font-size", "8px")
+           .style("text-anchor", "end")
+           .attr("dx", "-.8em")
+           .attr("dy", "-.55em")
+           .attr("transform", "rotate(-90)" );
 
 
-               var diagonal=d3.svg.diagonal()
-                 .projection(function(d){return [d.y,d.x]; })
+        svg.append("g")
+           .attr("class", "y axis")
+           .call(yAxis);
 
-               canvas.selectAll(".links")
-                 .data(links)
-                 .enter()
-                 .append("path")
-                 .attr("class","link")
-                 .attr("fill","none")
-                 .attr("stroke","#ADADAD")
-                 .attr("d",diagonal)
-                 .call(zoom);
 
-               var opacity = d3.scale.sqrt()
-                    .domain([d3.min(data, function (d) { return d.depth; }),d3.max(data, function (d) { return d.depth; })])
-                    .range([1, .5]);
+       svg.selectAll("rectangle")
+          .data(data)
+          .enter()
+          .append("rect")
+          .attr("class","rectangle")
+          .attr("width", widthD/100)
+          .attr("height", function(d){
+            return heightD - y(d.cost);
+          })
+          .attr("x", function(d, i){
+            return (widthD / data.length) * i ;
+          })
+          .attr("y", function(d){
+            return y(d.cost);
+          })
 
-             })
+      svg.append("text")
+         .attr("x", widthD / 2)
+         .attr("y", 0 - marginD.top / 2)
+         .attr("text-anchor", "middle")
+         .style("font-size", "16px")
+         .style("text-decoration", "underline")
+         .text("Consommation énergétique par catégorie des vidéos supprimées");
 
-             function redraw() {
-             canvas.attr('transform', 'translate(' + d3.event.translate + ')' +
-                 ' scale(' + d3.event.scale + ')');
-             }
+
+       });
 
 
 
-             function fade(c, opacity) {
-                 canvas.selectAll("circle")
-                    .filter(function (d) {
-                    return d.id != c;
-                    })
-                    .transition()
-                    .style("opacity", opacity);
-
-             }
-
-             function fadeOut() {
-                   canvas.selectAll("circle")
-                      .transition()
-                      .style("opacity", 1);
-             }
-
-           </script>
+   </script>
 
         </div>
       </div>
@@ -1141,11 +1120,11 @@
       </br>
       </br>
         <p>
-          Ce dendogramme permet de visualiser le nombre de vues par ordre décroissant
-          selon les catégories,les titres et les tags.
-          Il permet aux vidéastes d'identifier les catégories qui font le plus de vues de même
-          que les tags et les mots clés dans les titres de vidéos ainsi cela permet
-          d'éviter le stockage des vidéos inutilement et de consommer de l'énergie.
+          Ce graphe sert à visualiser la consommation énergétique des différentes
+          catégories par rapport aux vidéos supprimées.
+          On a remarqué que pas mal de vidéos sont publiées pour être supprimées par
+          la suite, cela peut être considérer comme du gâchis d'où l'objet de
+          graphe qui met en exergue le gaspillage d'énergie
         </p>
       </div>
     </div>
@@ -1204,7 +1183,7 @@
   color: black;
   text-decoration: none;
   cursor: pointer;
-} 
+}
     </style>
     <script>
       modal = document.getElementById("myModal")
