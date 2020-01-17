@@ -306,7 +306,7 @@
                 .style("stroke", "#3498db")
                 .style("opacity", "0.9")
                 .style("stroke-width", "1")
-                .attr("transform", "translate(-50, -45)");
+                .attr("transform", "translate(-55, -35)");
 
               // Cet élément contiendra tout notre texte
               var textviews = tooltip
@@ -559,7 +559,6 @@
 		.on('mousemove', function(d) {
 			// on recupere la position de la souris
 			var mousePosition = d3.mouse(this);
-			console.log(mousePosition)
 				// on affiche le toolip
 			tooltip_views.classed('hidden', false)
 				// on positionne le tooltip en fonction 
@@ -770,7 +769,6 @@
 					.on('mousemove', function(d) {
 							// on recupere la position de la souris
 						var mousePosition = d3.mouse(this);
-						console.log(mousePosition)
 							// on affiche le toolip
 						tooltip_cats.classed('hidden', false)
 							// on positionne le tooltip en fonction 
